@@ -249,7 +249,7 @@ int checkPlayable(Card c, Node* tHead, Node* tRear, Node* matchH, Node* matchR){
             if (temp == 0){ //if reach match
                 while(focus != NULL){
                     if (focus->num == -1){
-                        addCard(matchH, matchR, focus->data);
+                        addCard(&matchH, &matchR, focus->data);
                     }
                 }
                 
@@ -516,7 +516,7 @@ int main(void){
         printf("%d", opRear->num);
         printf(" cards.\n\n");
         commandEnter:
-        printf("What would you like to do? [ play card | place card | help ]\n");
+        printf("What would you like to do? [ capture card | place card | help ]\n");
         getCommand(command);
         if(compCom(command, "place card") == 0){
             printf("Which card? Type either card or position in hand (i.e. 1, 2, 3)\n");
@@ -524,12 +524,19 @@ int main(void){
             cardToString(&playerHand[0], cStr);
             cardPlace = convertToNum(command);
             if (cardPlace > 0  && cardPlace <= pRear->num){
-                checkPlayable(pHead->data, tHead, tRear, posHead, posRear); /* thead/ trear are filler for now*/
-                c = removeCardInt(&pHead, &pRear, cardPlace);
-                addCard(&tHead, &tRear, c);
+                //checkPlayable(pHead->data, tHead, tRear, posHead, posRear); /* thead/ trear are filler for now*/
+                addCard(&posHead, &posRear, c);
+                if (posHead != NULL){
+                    printf("A card can only be placed on the table when there are no cards to capture.\n");
+                    Sleep(SLEEPL*2);
+
+                }else{
+                    c = removeCardInt(&pHead, &pRear, cardPlace);
+                    addCard(&tHead, &tRear, c);
+                }
             }else{
                 printf("Please enter a valid number or card.\n");
-                Sleep(SLEEPL);
+                Sleep(SLEEPL*2);
             }
 
             // if (compCom(command, cStr) == 0){
@@ -542,7 +549,7 @@ int main(void){
             // }
             
 
-        }else if (compCom(command, "play card") == 0){
+        }else if (compCom(command, "capture card") == 0){
             /*1) select card from list*/
             /*remove from linked list*/
             /*remove from hand ^^use same function as above? as picking card and removing from hand. extra flavor goes after*/
@@ -551,6 +558,11 @@ int main(void){
             /*Seven of coins, highest card count, highest number of coins, save the highest number card of each suit (primes), scopas*/
            
            /*Create funtion that can check if card is playable. can loop through each card for above funct.*/ 
+            checkPlayable(pHead->data, tHead, tRear, posHead, posRear);
+            if (posHead == NULL){
+                printf("There are no cards that can be captured with your hand.\n");
+                Sleep(SLEEPL*2);
+            }
 
         }else if ((compCom(command, "help") == 0)){
             helpText();
