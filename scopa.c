@@ -10,6 +10,9 @@
 #define SUITL 10
 #define SLEEPL 350
 
+#define P1TURN -1
+#define P2TURN 1
+
 /*-------------------structs-------------------*/
 
 typedef struct card {
@@ -477,6 +480,9 @@ int main(void){
     int state = 0;
     int cardPlace = 0;;
     Node table;
+    Score p1;
+    Score p2;
+    int turn = P1TURN;
     //initializeDeck(deck);
     //dealCards(deck, &pHead, &pRear, &opHead, &opRear, &place);
     //printCards(pHead);
@@ -505,9 +511,15 @@ int main(void){
         addCard(&tHead, &tRear, deck[place]);
         place = place+1;
     } 
-    dealCards(deck, &pHead, &pRear, &opHead, &opRear, &place);
-    printf("------The cards have been dealt.------\n\n");
-    while (state == 0){
+
+    while (state == 0){ /*-------------------------------------------------------------*/
+
+        if(pHead == NULL && opHead == NULL){
+            dealCards(deck, &pHead, &pRear, &opHead, &opRear, &place);
+            printf("------The cards have been dealt.------\n\n");
+        }
+
+
         printf("The cards in your hand are are: ");
         printCards(pHead);
         printf("The cards on the table are:     ");
@@ -562,6 +574,16 @@ int main(void){
             if (posHead == NULL){
                 printf("There are no cards that can be captured with your hand.\n");
                 Sleep(SLEEPL*2);
+            }
+            if (tHead == NULL){
+                printf("SCOPA!\n");
+                if (turn == P1TURN){
+                    p1.scopa++;
+                }else{
+                    p2.scopa++;
+                }
+                
+                
             }
 
         }else if ((compCom(command, "help") == 0)){
