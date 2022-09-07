@@ -38,7 +38,7 @@ typedef struct score {
 
 typedef struct list {
     Node* head;
-    Node* rear;
+    Node* Tail;
     int size;
 }List;
 
@@ -50,20 +50,20 @@ void createList(){
     List* list = (List*)malloc(sizeof(List));
 }
 
-void addCard(Node **head, Node **rear, Card c){
+void addCard(Node **head, Node **Tail, Card c){
     /* ∆ Adds specified card to the end of llist. ∆ */
     Node* temp = (Node*)malloc(sizeof(Node));
     temp->data = c;
     temp->next = 0;
     if ((*head) == NULL){
         (*head) = temp;
-        (*rear) = temp;
+        (*Tail) = temp;
         temp->num = 1;
         temp->flag = 0;
     }else{
-        temp->num = (*rear)->num + 1;
-        (*rear)->next = temp;
-        (*rear) = temp;
+        temp->num = (*Tail)->num + 1;
+        (*Tail)->next = temp;
+        (*Tail) = temp;
     }
 }
 
@@ -77,7 +77,7 @@ void resetNums(Node **head){
     }
 }
 
-int removeCard(Node **head, Node **rear, Card c){
+int removeCard(Node **head, Node **Tail, Card c){
     /* ∆ Removes any specified card ∆ */
     /* ◎ EDGECASES: end of list removed, any in middle, first removed */
     Node *temp, *previous;
@@ -95,7 +95,7 @@ int removeCard(Node **head, Node **rear, Card c){
     while (temp != NULL){
         if (temp->data.suit == c.suit && temp->data.value == c.value){
             if (temp->next == NULL){
-                *rear = previous;
+                *Tail = previous;
             }
             previous->next = temp->next;
             free(temp);
@@ -108,7 +108,7 @@ int removeCard(Node **head, Node **rear, Card c){
     return 1;
 }
 
-Card removeCardInt(Node **head, Node **rear, int n){
+Card removeCardInt(Node **head, Node **Tail, int n){
     /* ∆ Removes any specified card ∆ */
     /* ◎ EDGECASES: end of list removed, any in middle, first removed */
     Node *temp, *previous;
@@ -128,7 +128,7 @@ Card removeCardInt(Node **head, Node **rear, int n){
     while (temp != NULL){
         if (temp->num == n){
             if (temp->next == NULL){
-                *rear = previous;
+                *Tail = previous;
             }
             previous->next = temp->next;
             c = temp->data;
@@ -208,7 +208,7 @@ char* cardToString(Card* c, char s[12]){
     }
 }
 
-int playable(Card c, Node* tHead, Node* tRear, Node* matchH, Node* matchR){
+int playable(Card c, Node* tHead, Node* tTail, Node* matchH, Node* matchR){
     int temp;
     if (tHead == NULL){
         resetNums(&tHead);
@@ -217,18 +217,18 @@ int playable(Card c, Node* tHead, Node* tRear, Node* matchH, Node* matchR){
     temp = c.value;
     temp -= tHead->data.value;
     if (temp > 0 && tHead->next != NULL){ /* if val is greater than 0 and not at end of list: cont. case */
-        // removeCardInt(&tHead, &tRear, tHead->next->num);       
+        // removeCardInt(&tHead, &tTail, tHead->next->num);       
 
 
         tHead->next->num = -1;
-        playable(c, tHead, tRear, matchH, matchR);
+        playable(c, tHead, tTail, matchH, matchR);
     }else{
         resetNums(&tHead);
-        playable(c, tHead->next, tRear->next, matchH, matchR);
+        playable(c, tHead->next, tTail->next, matchH, matchR);
     }
 }
 
-int checkPlayable(Card c, Node* tHead, Node* tRear, Node* matchH, Node* matchR){
+int checkPlayable(Card c, Node* tHead, Node* tTail, Node* matchH, Node* matchR){
     int temp;
     Node* focus = tHead;
     Node *next;
@@ -239,12 +239,12 @@ int checkPlayable(Card c, Node* tHead, Node* tRear, Node* matchH, Node* matchR){
         if (focus->data.value > temp){
             i = focus->num;
             focus = focus->next;
-            removeCardInt(&tHead, &tRear, i);   
+            removeCardInt(&tHead, &tTail, i);   
         }else{
             focus = (focus->next); 
         }
     }
-    j = tRear->num;
+    j = tTail->num;
     focus = tHead;
     for (int i = 0; i < j; i++){
         while(focus != NULL){
@@ -360,17 +360,27 @@ void initializeDeck(Card* deck){
     }
 }
 
-void dealCards(Card* deck, Node**head1, Node**rear1, Node**head2, Node**rear2, int* place){
+void dealCards(Card* deck, Node**head1, Node**Tail1, Node**head2, Node**Tail2, int* place){
     int i = 0;
     Card c;
     for (int i = 0; i < 3; i++){
         c = deck[*place];
-        addCard(head1, rear1, c);
+        addCard(head1, Tail1, c);
         *place = (*place)+1;
         c = deck[*place];
-        addCard(head2, rear2, c);
+        addCard(head2, Tail2, c);
         *place = (*place)+1;
     }
+}
+
+void displayCards(Node*playerHead, Node*opTail, Node*tableHead){
+    printf("The cards in your hand are: ");
+    printCards(playerHead);
+    printf("The cards on the table are: ");
+    printCards(tableHead);
+    printf("Your opponent has ");
+    printf("%d", opTail->num);
+    printf(" cards.\n\n");
 }
 
 void helpText(){
@@ -434,6 +444,76 @@ void helpText(){
         }
 }
 
+void action(Score p1, Node *pHead, Node *pTail, Node *tHead, Node *tTail){
+    char cStr[12] = {'\0'};
+    int cardPlace = 0;
+    Node *posHead = NULL;
+    Node *posTail = NULL;
+    char command[LENGTH];
+    Card c;
+    commandEnter:
+    printf("What would you like to do? [ capture card | place card | help ]\n");
+    getCommand(command);
+    if(compCom(command, "place card") == 0){
+        printf("Which card? Type either card or position in hand (i.e. 1, 2, 3)\n");
+        getCommand(command);
+        cardPlace = convertToNum(command);
+        if (cardPlace > 0  && cardPlace <= pTail->num){
+            //checkPlayable(p1Head->data, tHead, tTail, posHead, posTail); /* thead/ tTail are filler for now*/
+            //addCard(&posHead, &posTail, c);
+            if (posHead != NULL){
+                printf("A card can only be placed on the table when there are no cards to capture.\n");
+                Sleep(SLEEPL*2);
+
+            }else{
+                c = removeCardInt(&pHead, &pTail, cardPlace);
+                addCard(&tHead, &tTail, c);
+            }
+        }else{
+            printf("Please enter a valid number or card.\n");
+            Sleep(SLEEPL*2);
+            goto commandEnter;
+            
+        }
+
+        // if (compCom(command, cStr) == 0){
+        //     /*remove the card from the linked list !!!! End marker? >>needs traversal so hmm. probably fine?*/
+        //     /*need to be able to remove from middle on linked list*/
+        //     /*put it on the end of the table cards (end marker!!)*/
+        //     c = removeCardInt(&p1Head, &p1Tail, 1);
+        //     addCard(&tHead, &tTail, c);
+
+        // }
+        
+
+    }else if (compCom(command, "capture card") == 0){
+        /*1) select card from list*/
+        /*remove from linked list*/
+        /*remove from hand ^^use same function as above? as picking card and removing from hand. extra flavor goes after*/
+        /*Have to have New structure of "won" cards, saved for later.*/
+        /*Probably can go through elaborate checks to find:*/
+        /*Seven of coins, highest card count, highest number of coins, save the highest number card of each suit (primes), scopas*/
+        
+        /*Create funtion that can check if card is playable. can loop through each card for above funct.*/ 
+        checkPlayable(pHead->data, tHead, tTail, posHead, posTail);
+        if (posHead == NULL){
+            printf("There are no cards that can be captured with your hand.\n");
+            Sleep(SLEEPL*2);
+        }
+        if (tHead == NULL){
+            printf("SCOPA!\n");
+            p1.scopa++;
+            
+            
+        }
+
+    }else if ((compCom(command, "help") == 0)){
+        helpText();
+    }
+}
+
+
+
 
 
 /*------------------------------------------------------*/
@@ -444,26 +524,26 @@ int main(void){
 
     /* -- LISTS -- */
     // List* pHand = (List*)malloc(sizeof(List) * 2);
-    Node *pHead = NULL;
-    Node *pRear = NULL;
-    Node *opHead = NULL;
-    Node *opRear = NULL;
+    Node *p1Head = NULL;
+    Node *p1Tail = NULL;
+    Node *p2Head = NULL;
+    Node *p2Tail = NULL;
     Node *tHead = NULL;
-    Node *tRear = NULL;
+    Node *tTail = NULL;
     Node *posHead = NULL;
-    Node *posRear = NULL;
+    Node *posTail = NULL;
    
 
 
-    // rear = 0;
+    // Tail = 0;
     // Card b;
     // b.suit = "of Coins";
     // b.value = 7;
-    // addCard(&head, &rear, b;
+    // addCard(&head, &Tail, b;
     // b.suit = "of Swords";
     // b.value = 10;
-    // addCard(&head, &rear, b);
-    // removeCard(&head, &rear, b);
+    // addCard(&head, &Tail, b);
+    // removeCard(&head, &Tail, b);
 
 
     char command[LENGTH] = {'\0'};
@@ -484,8 +564,8 @@ int main(void){
     Score p2;
     int turn = P1TURN;
     //initializeDeck(deck);
-    //dealCards(deck, &pHead, &pRear, &opHead, &opRear, &place);
-    //printCards(pHead);
+    //dealCards(deck, &p1Head, &p1Tail, &p2Head, &p2Tail, &place);
+    //printCards(p1Head);
 
     printf("\n-----------------SCOPA-----------------\n");
     printf("Welcome!\n");
@@ -508,89 +588,27 @@ int main(void){
 
     initializeDeck(deck);    
     for (int i = 0; i < 4; i++){
-        addCard(&tHead, &tRear, deck[place]);
+        addCard(&tHead, &tTail, deck[place]);
         place = place+1;
     } 
 
     while (state == 0){ /*-------------------------------------------------------------*/
 
-        if(pHead == NULL && opHead == NULL){
-            dealCards(deck, &pHead, &pRear, &opHead, &opRear, &place);
+        if(p1Head == NULL && p2Head == NULL){
+            dealCards(deck, &p1Head, &p1Tail, &p2Head, &p2Tail, &place);
             printf("------The cards have been dealt.------\n\n");
         }
-
-
-        printf("The cards in your hand are are: ");
-        printCards(pHead);
-        printf("The cards on the table are:     ");
-        printCards(tHead);
-        printf("Your opponent has ");
-        printf("%d", opRear->num);
-        printf(" cards.\n\n");
-        commandEnter:
-        printf("What would you like to do? [ capture card | place card | help ]\n");
-        getCommand(command);
-        if(compCom(command, "place card") == 0){
-            printf("Which card? Type either card or position in hand (i.e. 1, 2, 3)\n");
-            getCommand(command);
-            cardToString(&playerHand[0], cStr);
-            cardPlace = convertToNum(command);
-            if (cardPlace > 0  && cardPlace <= pRear->num){
-                //checkPlayable(pHead->data, tHead, tRear, posHead, posRear); /* thead/ trear are filler for now*/
-                addCard(&posHead, &posRear, c);
-                if (posHead != NULL){
-                    printf("A card can only be placed on the table when there are no cards to capture.\n");
-                    Sleep(SLEEPL*2);
-
-                }else{
-                    c = removeCardInt(&pHead, &pRear, cardPlace);
-                    addCard(&tHead, &tRear, c);
-                }
-            }else{
-                printf("Please enter a valid number or card.\n");
-                Sleep(SLEEPL*2);
-            }
-
-            // if (compCom(command, cStr) == 0){
-            //     /*remove the card from the linked list !!!! End marker? >>needs traversal so hmm. probably fine?*/
-            //     /*need to be able to remove from middle on linked list*/
-            //     /*put it on the end of the table cards (end marker!!)*/
-            //     c = removeCardInt(&pHead, &pRear, 1);
-            //     addCard(&tHead, &tRear, c);
-
-            // }
-            
-
-        }else if (compCom(command, "capture card") == 0){
-            /*1) select card from list*/
-            /*remove from linked list*/
-            /*remove from hand ^^use same function as above? as picking card and removing from hand. extra flavor goes after*/
-            /*Have to have New structure of "won" cards, saved for later.*/
-            /*Probably can go through elaborate checks to find:*/
-            /*Seven of coins, highest card count, highest number of coins, save the highest number card of each suit (primes), scopas*/
-           
-           /*Create funtion that can check if card is playable. can loop through each card for above funct.*/ 
-            checkPlayable(pHead->data, tHead, tRear, posHead, posRear);
-            if (posHead == NULL){
-                printf("There are no cards that can be captured with your hand.\n");
-                Sleep(SLEEPL*2);
-            }
-            if (tHead == NULL){
-                printf("SCOPA!\n");
-                if (turn == P1TURN){
-                    p1.scopa++;
-                }else{
-                    p2.scopa++;
-                }
-                
-                
-            }
-
-        }else if ((compCom(command, "help") == 0)){
-            helpText();
+ 
+        if(turn == P1TURN){
+            displayCards(p1Head, p2Tail, tHead);
+            action(p1, p1Head, p2Tail, tHead, tTail);
+            turn = P2TURN;
         }else{
-            goto commandEnter;
+            displayCards(p2Head, p1Tail, tHead);
+            action(p2, p2Head, p2Tail, tHead, tTail);
+            turn = P1TURN;
         }
+
         system("cls");
         printf("\n---------------------------------------\n");
     }
