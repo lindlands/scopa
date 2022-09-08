@@ -117,10 +117,18 @@ Card removeCardInt(Node **head, Node **tail, int n){
     previous = *head;
     /*first node*/
     if (temp->num == n){
-        *head = (*head)->next;
-        c = temp->data;
-        free(temp);
-        resetNums(head);
+        if ((*head) == (*tail)){
+            *head = (*head)->next;
+            c = temp->data;
+            free(temp);
+            *tail = NULL;
+            *head = NULL;
+        }else{
+            *head = (*head)->next;
+            c = temp->data;
+            free(temp);
+            resetNums(head);
+        }
         return c;
     }
     /*not first node, loop through*/
@@ -173,19 +181,23 @@ int findPrime(Score s){
 
 void printCards(Node *head){
     Node* temp = head;
-    while(temp->next != NULL){
+    if (head == NULL){
+        printf("You have no cards.\n");
+    }else{
+        while(temp->next != NULL){
+            printf("[");
+            printf("%d", (*temp).data.value);
+            printf((*temp).data.suit);
+            printf("]");
+            printf(", ");
+            temp = (*temp).next;
+        }
         printf("[");
         printf("%d", (*temp).data.value);
         printf((*temp).data.suit);
         printf("]");
-        printf(", ");
-        temp = (*temp).next;
+        printf("\n");
     }
-    printf("[");
-    printf("%d", (*temp).data.value);
-    printf((*temp).data.suit);
-    printf("]");
-    printf("\n");
 }
 
 char* cardToString(Card* c, char s[12]){
@@ -379,8 +391,16 @@ void displayCards(Node*playerHead, Node*opTail, Node*tableHead){
     printf("The cards on the table are: ");
     printCards(tableHead);
     printf("Your opponent has ");
-    printf("%d", opTail->num);
-    printf(" cards.\n\n");
+    if (opTail == NULL){
+        printf("0 cards.\n\n");
+    }else{
+        printf("%d", opTail->num);
+        if (opTail->num == 1){
+            printf(" card.\n\n");
+        }else{
+            printf(" cards.\n\n");
+        }
+    }
 }
 
 void helpText(){
@@ -452,6 +472,11 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
     char command[LENGTH];
     Card c;
     commandEnter:
+    if (*pHead == NULL){
+        printf("You have no more cards.");
+        Sleep(SLEEPL*4);
+        return;
+    }
     printf("What would you like to do? [ capture card | place card | help ]\n");
     getCommand(command);
     if(compCom(command, "place card") == 0){
@@ -600,10 +625,12 @@ int main(void){
         }
  
         if(turn == P1TURN){
+            printf("----PLAYER 1----\n");
             displayCards(p1Head, p2Tail, tHead);
-            action(&p1, &p1Head, &p2Tail, &tHead, &tTail);
+            action(&p1, &p1Head, &p1Tail, &tHead, &tTail);
             turn = P2TURN;
         }else{
+            printf("----PLAYER 2----\n");
             displayCards(p2Head, p1Tail, tHead);
             action(&p2, &p2Head, &p2Tail, &tHead, &tTail);
             turn = P1TURN;
