@@ -181,6 +181,7 @@ int findPrime(Score s){
 
 void printCards(Node *head){
     Node* temp = head;
+    int place = 0;
     if (head == NULL){
         printf("You have no cards.\n");
     }else{
@@ -191,6 +192,11 @@ void printCards(Node *head){
             printf("]");
             printf(", ");
             temp = (*temp).next;
+            place++;
+            if (place == 3){
+                printf("\n                            ");
+                place = 0;
+            }
         }
         printf("[");
         printf("%d", (*temp).data.value);
@@ -474,7 +480,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
     commandEnter:
     if (*pHead == NULL){
         printf("You have no more cards.");
-        Sleep(SLEEPL*4);
+        Sleep(SLEEPL*2);
         return;
     }
     printf("What would you like to do? [ capture card | place card | help ]\n");
