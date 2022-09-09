@@ -409,6 +409,14 @@ void displayCards(Node*playerHead, Node*opTail, Node*tableHead){
     }
 }
 
+void playerBuffer(){
+    char enterCheck = 'a';
+    printf("Press ENTER to start turn.\n");
+    while (enterCheck != '\n'){enterCheck = getchar();}
+    system("cls");
+    printf("\n---------------------------------------\n");
+}
+
 void helpText(){
     help_rules:
     system("cls");
@@ -564,19 +572,6 @@ int main(void){
     Node *posHead = NULL;
     Node *posTail = NULL;
    
-
-
-    // tail = 0;
-    // Card b;
-    // b.suit = "of Coins";
-    // b.value = 7;
-    // addCard(&head, &tail, b;
-    // b.suit = "of Swords";
-    // b.value = 10;
-    // addCard(&head, &tail, b);
-    // removeCard(&head, &tail, b);
-
-
     char command[LENGTH] = {'\0'};
     char cStr[12] = {'\0'};
     Card c;
@@ -589,14 +584,11 @@ int main(void){
     int place = 0;
     int i;
     int state = 0;
-    int cardPlace = 0;;
+    int cardPlace = 0;
     Node table;
     Score p1;
     Score p2;
     int turn = P1TURN;
-    //initializeDeck(deck);
-    //dealCards(deck, &p1Head, &p1Tail, &p2Head, &p2Tail, &place);
-    //printCards(p1Head);
 
     printf("\n-----------------SCOPA-----------------\n");
     printf("Welcome!\n");
@@ -631,11 +623,15 @@ int main(void){
         }
  
         if(turn == P1TURN){
+            printf("\n----PLAYER 1----\n");
+            playerBuffer();
             printf("----PLAYER 1----\n");
             displayCards(p1Head, p2Tail, tHead);
             action(&p1, &p1Head, &p1Tail, &tHead, &tTail);
             turn = P2TURN;
         }else{
+            printf("\n----PLAYER 2----\n");
+            playerBuffer();
             printf("----PLAYER 2----\n");
             displayCards(p2Head, p1Tail, tHead);
             action(&p2, &p2Head, &p2Tail, &tHead, &tTail);
