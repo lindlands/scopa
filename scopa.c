@@ -417,6 +417,22 @@ void playerBuffer(){
     printf("\n---------------------------------------\n");
 }
 
+void dealText(){
+    int i = 0;
+    for (int i = 0; i < 3; i++){
+        printf("/ ");
+        Sleep(SLEEPL/2);
+    }
+    printf("Dealing Cards ");
+    for (int i = 0; i < 3; i++){
+        printf("/ ");
+        Sleep(SLEEPL/2);
+    }
+    Sleep(SLEEPL);
+    system("cls");
+    printf("\n---------------------------------------\n");
+}
+
 void helpText(){
     help_rules:
     system("cls");
@@ -548,6 +564,8 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
 
     }else if ((compCom(command, "help") == 0)){
         helpText();
+    }else{
+        goto commandEnter;
     }
 }
 
@@ -619,6 +637,7 @@ int main(void){
 
         if(p1Head == NULL && p2Head == NULL){
             dealCards(deck, &p1Head, &p1Tail, &p2Head, &p2Tail, &place);
+            dealText();
             printf("------The cards have been dealt.------\n\n");
         }
  
