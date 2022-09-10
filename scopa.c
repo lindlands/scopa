@@ -296,24 +296,25 @@ int checkPlayable(Card c, Node* tHead, Node* tTail, Node** matchH, Node** matchT
     focus = tHead;
     subFocus = tHead;
     for (int i = 0; i < tTail->order; i++){ //for each focus
-        subFocus = subFocus->next;
+        subFocus = subFocus->next; //this needs to change
         sum = c.value - focus->data.value;
         if (sum == 0){
             addCard(matchH, matchT, focus->data);
         }else{
         
-            // for (int i = focus->order; i <= tTail->order; i++){
-            //     if(subFocus->flag != HIDE){ //ignore hidden nodes
-            //     sum = sum - subFocus->data.value;
-            //         if (sum <= 0){
-            //             if (sum == 0){
-            //             addCard(matchH, matchT, subFocus->data);
-            //             }
-            //             break;
-            //         } 
-            //     }
-            // focus->next->flag = HIDE;    
-            // }
+            while (subFocus != NULL){ //go until end of list
+                if(subFocus->flag != HIDE){ //ignore hidden nodes
+                    sum = sum - subFocus->data.value;
+                    if (sum <= 0){
+                        if (sum == 0){
+                        addCard(matchH, matchT, subFocus->data);
+                        }
+                        focus->next->flag = HIDE;   
+                    } 
+                }else{
+                    subFocus = subFocus->next;
+                }
+            }
         
         } 
         focus = subFocus;
