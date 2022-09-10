@@ -12,6 +12,7 @@
 
 #define P1TURN -1
 #define P2TURN 1
+#define HIDE -1
 
 /*-------------------structs-------------------*/
 
@@ -22,7 +23,7 @@ typedef struct card {
 
 typedef struct node {
     Card data;
-    int num;
+    int order;
     int flag;
     struct node *next;
 }Node;
@@ -55,13 +56,14 @@ void addCard(Node **head, Node **tail, Card c){
     Node* temp = (Node*)malloc(sizeof(Node));
     temp->data = c;
     temp->next = 0;
+    temp->flag = 0;
     if ((*head) == NULL){
         (*head) = temp;
         (*tail) = temp;
-        temp->num = 1;
-        temp->flag = 0;
+        temp->order = 1;
+        
     }else{
-        temp->num = (*tail)->num + 1;
+        temp->order = (*tail)->order + 1;
         (*tail)->next = temp;
         (*tail) = temp;
     }
@@ -71,7 +73,7 @@ void resetNums(Node **head){
     int counter = 1;
     Node*temp = *head;
     while (temp != NULL){
-        temp->num = counter;
+        temp->order = counter;
         counter++;
         temp = temp->next;
     }
@@ -116,7 +118,7 @@ Card removeCardInt(Node **head, Node **tail, int n){
     temp = *head;
     previous = *head;
     /*first node*/
-    if (temp->num == n){
+    if (temp->order == n){
         if ((*head) == (*tail)){
             *head = (*head)->next;
             c = temp->data;
@@ -134,7 +136,7 @@ Card removeCardInt(Node **head, Node **tail, int n){
     /*not first node, loop through*/
     temp = temp->next;
     while (temp != NULL){
-        if (temp->num == n){
+        if (temp->order == n){
             if (temp->next == NULL){
                 *tail = previous;
             }
@@ -235,59 +237,102 @@ int playable(Card c, Node* tHead, Node* tTail, Node* matchH, Node* matchR){
     temp = c.value;
     temp -= tHead->data.value;
     if (temp > 0 && tHead->next != NULL){ /* if val is greater than 0 and not at end of list: cont. case */
-        // removeCardInt(&tHead, &tTail, tHead->next->num);       
+        // removeCardInt(&tHead, &tTail, tHead->next->order);       
 
 
-        tHead->next->num = -1;
+        tHead->next->order = -1;
         playable(c, tHead, tTail, matchH, matchR);
     }else{
         resetNums(&tHead);
         playable(c, tHead->next, tTail->next, matchH, matchR);
     }
+
+
+    //----------------------------
+
+    // j = tTail->order;
+    // focus = tHead;
+    // for (int i = 0; i < j; i++){
+    //     while(focus != NULL){
+    //         temp = temp - tHead->data.value;
+    //         if (temp == 0){ //if reach match
+    //             while(focus != NULL){
+    //                 if (focus->order == -1){
+    //                     addCard(&matchH, &matchR, focus->data);
+    //                 }
+    //             }
+                
+    //         }
+    //         if (temp < 0){
+    //             focus->next->flag = -1;
+    //         }
+            
+    //         temp = c.value;
+    //         focus = focus->next;
+    //         next = next->next;
+    //     }
+        
+    // }
 }
 
-int checkPlayable(Card c, Node* tHead, Node* tTail, Node* matchH, Node* matchR){
-    int temp;
+int checkPlayable(Card c, Node* tHead, Node* tTail, Node** matchH, Node** matchT){
+    int sum;
     Node* focus = tHead;
-    Node *next;
+    Node *subFocus;
     int i;
     int j;
-    temp = c.value;
+    sum = c.value;
     while (focus != NULL){ /* removes all greater-than cards */
-        if (focus->data.value > temp){
-            i = focus->num;
+        if (focus->data.value > sum){
+            i = focus->order;
             focus = focus->next;
             removeCardInt(&tHead, &tTail, i);   
         }else{
             focus = (focus->next); 
         }
     }
-    j = tTail->num;
+    /*start of elimination part*/
+    /*note that this implies a list of greater than one*/
     focus = tHead;
-    for (int i = 0; i < j; i++){
-        while(focus != NULL){
-            temp = temp - tHead->data.value;
-            if (temp == 0){ //if reach match
-                while(focus != NULL){
-                    if (focus->num == -1){
-                        addCard(&matchH, &matchR, focus->data);
-                    }
-                }
-                
-            }
-            if (temp < 0){
-                focus->next->flag = -1;
-            }
-            
-            temp = c.value;
-            focus = focus->next;
-            next = next->next;
-        }
+    subFocus = tHead;
+    for (int i = 0; i < tTail->order; i++){ //for each focus
+        subFocus = subFocus->next;
+        sum = c.value - focus->data.value;
+        if (sum == 0){
+            addCard(matchH, matchT, focus->data);
+        }else{
         
+            // for (int i = focus->order; i <= tTail->order; i++){
+            //     if(subFocus->flag != HIDE){ //ignore hidden nodes
+            //     sum = sum - subFocus->data.value;
+            //         if (sum <= 0){
+            //             if (sum == 0){
+            //             addCard(matchH, matchT, subFocus->data);
+            //             }
+            //             break;
+            //         } 
+            //     }
+            // focus->next->flag = HIDE;    
+            // }
+        
+        } 
+        focus = subFocus;
     }
+}
 
+void rePlayable(int sum, Node* focus, Node* subfocus, Node* matchH, Node* matchT){
+    if (subfocus == NULL){
+        return;
+    }else{
+        if (sum >=0){
+            if (sum == 0){
+                addCard(&matchH, &matchT, subfocus->data);
+            }
+            rePlayable(sum, focus, subfocus->next, matchH, matchT); /*hide next node*/
+        }  
+    }
+    
 
-   
 }
 
 
@@ -400,8 +445,8 @@ void displayCards(Node*playerHead, Node*opTail, Node*tableHead){
     if (opTail == NULL){
         printf("0 cards.\n\n");
     }else{
-        printf("%d", opTail->num);
-        if (opTail->num == 1){
+        printf("%d", opTail->order);
+        if (opTail->order == 1){
             printf(" card.\n\n");
         }else{
             printf(" cards.\n\n");
@@ -513,7 +558,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
         printf("Which card? Type either card or position in hand (i.e. 1, 2, 3)\n");
         getCommand(command);
         cardPlace = convertToNum(command);
-        if (cardPlace > 0  && cardPlace <= (*pTail)->num){
+        if (cardPlace > 0  && cardPlace <= (*pTail)->order){
             //checkPlayable(p1Head->data, tHead, tTail, posHead, posTail); /* thead/ tTail are filler for now*/
             //addCard(&posHead, &posTail, c);
             if (posHead != NULL){
@@ -550,7 +595,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
         /*Seven of coins, highest card count, highest number of coins, save the highest number card of each suit (primes), scopas*/
         
         /*Create funtion that can check if card is playable. can loop through each card for above funct.*/ 
-        checkPlayable((*pHead)->data, *tHead, *tTail, posHead, posTail);
+        checkPlayable((*pHead)->data, *tHead, *tTail, &posHead, &posTail);
         if (posHead == NULL){
             printf("There are no cards that can be captured with your hand.\n");
             Sleep(SLEEPL*2);
