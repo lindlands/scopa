@@ -389,6 +389,21 @@ int convertToNum(char* command){
 
 /*-----------------Game initialization-----------------*/
 
+void printPicture(char str[]){
+    FILE *txtfile;
+    char c;
+    txtfile = fopen(str, "r");
+    if (txtfile == NULL){
+        printf("There was an error.");
+    }
+    c = fgetc(txtfile); 
+    while (c != EOF) { 
+        printf ("%c", c); 
+        c = fgetc(txtfile); 
+    } 
+    fclose(txtfile);
+}
+
 void initializeDeck(Card* deck){
     int i;
     int counter = 0;
@@ -626,7 +641,6 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
 int main(void){
 
     /* -- LISTS -- */
-    // List* pHand = (List*)malloc(sizeof(List) * 2);
     Node *p1Head = NULL;
     Node *p1Tail = NULL;
     Node *p2Head = NULL;
@@ -654,6 +668,7 @@ int main(void){
     Score p2;
     int turn = P1TURN;
 
+    //printPicture(".txt");
     printf("\n-----------------SCOPA-----------------\n");
     printf("Welcome!\n");
     beginning:
