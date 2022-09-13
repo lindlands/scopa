@@ -152,6 +152,64 @@ Card removeCardInt(Node **head, Node **tail, int n){
     return c;
 }
 
+void merge(Node *rHead, Node *rTail, Node *lHead, Node *lTail, Node **head, Node **tail){
+    Node *rPoint, *lPoint;
+    rPoint = rHead;
+    lPoint = lHead;
+    while (rPoint != NULL && lPoint != NULL){
+        if (rPoint <= lPoint){
+            addCard(head, tail, rPoint->data);
+            rPoint = rPoint->next;
+        }else{
+            addCard(head, tail, lPoint->data);
+            lPoint = lPoint->next;
+        }
+    }
+    while (rPoint != NULL){
+        addCard(head, tail, rPoint->data);
+        rPoint = rPoint->next;
+    }
+    while (lPoint != NULL){
+        addCard(head, tail, lPoint->data);
+        lPoint = lPoint->next;
+    }
+    
+}
+
+void mergeSort(Node *head, Node *tail){
+    Node *newTail;
+    Node *newHead;
+    Node **mergeHead;
+    Node **mergeTail;
+    Node *filler;
+    int i;
+    int place = 0;
+    if (head->next == NULL){
+        return;
+    }
+    place = (tail->order)/2;
+    filler = head;
+    for (int i = 0; i <= place; i++){
+        if (i == place){
+            newHead = filler;
+        }else{
+            if (i == place - 1){
+                newTail = filler;
+                filler = filler->next;
+                newTail->next = NULL;
+            }else{
+                filler = filler->next;
+            }
+            
+        }
+    }
+    mergeSort(head, newTail);
+    mergeSort(newHead, tail);
+
+    return merge(head, newTail, newHead, tail, mergeHead, mergeTail);
+
+
+}
 
 /*-----------------Card funtions-----------------*/
 
@@ -275,6 +333,7 @@ int playable(Card c, Node* tHead, Node* tTail, Node* matchH, Node* matchR){
     // }
 }
 
+
 int checkPlayable(Card c, Node* tHead, Node* tTail, Node** matchH, Node** matchT){
     int sum;
     Node* focus = tHead;
@@ -291,48 +350,49 @@ int checkPlayable(Card c, Node* tHead, Node* tTail, Node** matchH, Node** matchT
             focus = (focus->next); 
         }
     }
-    /*start of elimination part*/
-    /*note that this implies a list of greater than one*/
-    focus = tHead;
-    subFocus = tHead;
-    for (int i = 0; i < tTail->order; i++){ //for each focus
-        subFocus = subFocus->next; //this needs to change
-        sum = c.value - focus->data.value;
-        if (sum == 0){
-            addCard(matchH, matchT, focus->data);
-        }else{
+    // /*start of elimination part*/
+    // /*note that this implies a list of greater than one*/
+    // focus = tHead;
+    // subFocus = tHead;
+    // for (int i = 0; i < tTail->order; i++){ //for each focus
+    //     //subFocus = subFocus->next; //this needs to change
+    //     sum = c.value - focus->data.value;
+    //     if (sum == 0){
+    //         addCard(matchH, matchT, focus->data);
+    //         focus = subFocus;
+    //         subFocus = subFocus->next;
+    //     }else{
         
-            while (subFocus != NULL){ //go until end of list
-                if(subFocus->flag != HIDE){ //ignore hidden nodes
-                    sum = sum - subFocus->data.value;
-                    if (sum <= 0){
-                        if (sum == 0){
-                        addCard(matchH, matchT, subFocus->data);
-                        }
-                        focus->next->flag = HIDE;   
-                    } 
-                }else{
-                    subFocus = subFocus->next;
-                }
-            }
+    //         while (subFocus != NULL){ //go until end of list
+    //             if(subFocus->flag != HIDE){ //ignore hidden nodes
+    //                 sum = sum - subFocus->data.value;
+    //                 if (sum <= 0){
+    //                     if (sum == 0){
+    //                     addCard(matchH, matchT, subFocus->data);
+    //                     }
+    //                     focus->next->flag = HIDE;   
+    //                 }else{
+    //                     subFocus = subFocus->next;
+    //                 } 
+    //             }else{
+    //                 subFocus = subFocus->next;
+    //             }
+    //         }
+    //         focus = subFocus;
+    //     } 
         
-        } 
-        focus = subFocus;
-    }
+    // }
 }
 
-void rePlayable(int sum, Node* focus, Node* subfocus, Node* matchH, Node* matchT){
-    if (subfocus == NULL){
-        return;
+int rePlayable(int sum, Node* focus, Node* matchH, Node* matchT){
+    //sum to start is 9
+    int subsum = sum;
+    subsum -= focus->data.value; //subsum == 4
+    if (subsum == 0){
+        return 1; //found match
     }else{
-        if (sum >=0){
-            if (sum == 0){
-                addCard(&matchH, &matchT, subfocus->data);
-            }
-            rePlayable(sum, focus, subfocus->next, matchH, matchT); /*hide next node*/
-        }  
+        rePlayable(subsum, focus, matchH, matchT);
     }
-    
 
 }
 
@@ -540,7 +600,7 @@ void helpText(){
             printf("Okay, we'll get right into it. Good luck! \n\n");
         }else{
             help_loop:
-            printf("What would you like to review? [rules/gameplay/scoring]\n");
+            printf("What would you like to review? [rules/gameplay/scoring/exit]\n");
             getCommand(command);
             if (compCom(command, "rules") == 0){
                 goto help_rules;
@@ -548,6 +608,8 @@ void helpText(){
                 goto help_gameplay;
             }else if (compCom(command, "scoring") == 0){
                 goto help_scoring;
+            }else if (compCom(command, "exit") == 0){
+                return;
             }else{
                 goto help_loop;
             }
@@ -701,6 +763,8 @@ int main(void){
             dealText();
             printf("------The cards have been dealt.------\n\n");
         }
+
+        mergeSort(tHead, tTail);
  
         if(turn == P1TURN){
             printf("\n----PLAYER 1----\n");
