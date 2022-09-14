@@ -152,42 +152,42 @@ Card removeCardInt(Node **head, Node **tail, int n){
     return c;
 }
 
-void merge(Node *rHead, Node *rTail, Node *lHead, Node *lTail, Node **head, Node **tail){
+void merge(Node *rHead, Node *rTail, Node *lHead, Node *lTail){
     Node *rPoint, *lPoint;
+    Node *head = NULL;
+    Node *tail = NULL;
     rPoint = rHead;
     lPoint = lHead;
     while (rPoint != NULL && lPoint != NULL){
         if (rPoint <= lPoint){
-            addCard(head, tail, rPoint->data);
+            addCard(&head, &tail, rPoint->data);
             rPoint = rPoint->next;
         }else{
-            addCard(head, tail, lPoint->data);
+            addCard(&head, &tail, lPoint->data);
             lPoint = lPoint->next;
         }
     }
     while (rPoint != NULL){
-        addCard(head, tail, rPoint->data);
+        addCard(&head, &tail, rPoint->data);
         rPoint = rPoint->next;
     }
     while (lPoint != NULL){
-        addCard(head, tail, lPoint->data);
+        addCard(&head, &tail, lPoint->data);
         lPoint = lPoint->next;
     }
     
 }
 
-void mergeSort(Node *head, Node *tail){
+void mergeSort(Node *head, Node *tail, Node**mergeHead, Node**mergeTail){
     Node *newTail;
     Node *newHead;
-    Node **mergeHead;
-    Node **mergeTail;
     Node *filler;
     int i;
     int place = 0;
     if (head->next == NULL){
         return;
     }
-    place = (tail->order)/2;
+    place = (tail->order - head->order + 1)/2;
     filler = head;
     for (int i = 0; i <= place; i++){
         if (i == place){
@@ -203,10 +203,10 @@ void mergeSort(Node *head, Node *tail){
             
         }
     }
-    mergeSort(head, newTail);
-    mergeSort(newHead, tail);
+    mergeSort(head, newTail, mergeHead, mergeTail);
+    mergeSort(newHead, tail, mergeHead, mergeTail);
 
-    return merge(head, newTail, newHead, tail, mergeHead, mergeTail);
+    return merge(head, newTail, newHead, tail);
 
 
 }
@@ -711,6 +711,9 @@ int main(void){
     Node *tTail = NULL;
     Node *posHead = NULL;
     Node *posTail = NULL;
+
+    Node *mergeHead = NULL;
+    Node *mergeTail = NULL;
    
     char command[LENGTH] = {'\0'};
     char cStr[12] = {'\0'};
@@ -764,7 +767,7 @@ int main(void){
             printf("------The cards have been dealt.------\n\n");
         }
 
-        mergeSort(tHead, tTail);
+        mergeSort(tHead, tTail, &mergeHead, &mergeTail);
  
         if(turn == P1TURN){
             printf("\n----PLAYER 1----\n");
