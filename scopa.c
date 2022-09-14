@@ -324,18 +324,37 @@ char* cardToString(Card* c, char s[12]){
     }
 }
 
-int checkCards(int val, int nums[9]){
+int checkCards(int val, int nums[9], Node **head, Node **tail){
     /*verifies that list adds up to chosen value*/
     int i;
+    int cardVal;
+    Card c;
     int counter = 0;
     while(nums[i] != 0 && i < 10){
-        counter += nums[i];
+        c = findCardInt(head, tail, nums[i]);
+        counter += c.value;
         i++;
     }
     if (counter == val){
         return 1;
     }
     return 0;
+}
+
+void flagForDeletion(Node **head, int nums[9]){
+    Node *filler = *head;
+    int i = 0;
+    while(filler != NULL){
+        while(i < 10 && nums[i] != 0){
+            if(nums[i] == filler->order){
+                filler->flag == -1;
+                break;
+            }
+            i++;
+        }
+        filler = filler->next;
+        i = 0;
+    }
 }
 
 int playable(Card c, Node* tHead, Node* tTail, Node* matchH, Node* matchR){
@@ -502,7 +521,7 @@ void parseCommand(char *str, int nums[9]){
     int j = 0;
     int i;
     for (int i = 0; i < strlen(str); i++){
-        if (str[i] != ' ' && str[i] != '/n'){
+        if (str[i] != ' ' && str[i] != '\n'){
             if (str[i] == 1 && str[i + 1] == 0){
                 nums[j] = 10;
                 j++;
@@ -754,7 +773,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
         //     Sleep(SLEEPL*2);
         // }
 
-        printf("Which card? Type either card or position in hand (i.e. 1, 2, 3)\n"); //put this bit in a function
+        printf("Which card from your hand do you want to play? Type position in hand (i.e. 1, 2, 3).\n"); //put this bit in a function
         getCommand(command);
         cardPlace = convertToNum(command);
         if (cardPlace <= 0  || cardPlace > (*pTail)->order){
@@ -772,16 +791,17 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
         printf("Which cards on the table? Type position on table separated by a space (e.g. 3 1 5).\n");
         getCommand(command);
         parseCommand(command, inputNums);
-        if (checkCards(c.value, inputNums) == 1){
-            removeCardInt(pHead, pTail, cardPlace);
+        if (checkCards(c.value, inputNums, tHead, tTail) == 1){
             for (int i = 0; i < 10; i++){
                 if(inputNums[i] == 0){
                     break;
                 }
                 p1->numCards++;
-                prime = findPrimeVal(findCardInt(tHead, tTail, i).value);
-                removeCardInt(tHead, tTail, inputNums[i]);
+                prime = findPrimeVal(findCardInt(tHead, tTail, inputNums[i]).value);
+                //removeCardInt(tHead, tTail, inputNums[i]);
             }
+            flagForDeletion(tHead, inputNums);
+            removeCardInt(pHead, pTail, cardPlace);
         }      
 
 
@@ -877,7 +897,7 @@ int main(void){
             printf("------The cards have been dealt.------\n\n");
         }
 
-        mergeSort(tHead, tTail, &mergeHead, &mergeTail);
+        //mergeSort(tHead, tTail, &mergeHead, &mergeTail);
  
         if(turn == P1TURN){
             printf("\n----PLAYER 1----\n");
