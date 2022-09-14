@@ -255,6 +255,28 @@ int findPrime(Score s){
     return total;
 }
 
+int findPrimeVal(int i){
+    /* ∆ calculates the correct adjusted prime value of one number. ∆ */
+    
+    if (i == 7){
+        return 21;
+    }else if (i == 6){
+        return 18;
+    }else if (i == 1){
+        return 16;
+    }else if (i == 5){
+        return 15;
+    }else if (i == 4){
+        return 14;
+    }else if (i == 3){
+        return 13;
+    }else if (i == 2){
+        return 12;
+    }else{ /*face cards*/
+        return 10;
+    }
+}
+
 void printCards(Node *head){
     Node* temp = head;
     int place = 0;
@@ -300,6 +322,20 @@ char* cardToString(Card* c, char s[12]){
         s[place] = c->suit[i];
         place++;
     }
+}
+
+int checkCards(int val, int nums[9]){
+    /*verifies that list adds up to chosen value*/
+    int i;
+    int counter = 0;
+    while(nums[i] != 0 && i < 10){
+        counter += nums[i];
+        i++;
+    }
+    if (counter == val){
+        return 1;
+    }
+    return 0;
 }
 
 int playable(Card c, Node* tHead, Node* tTail, Node* matchH, Node* matchR){
@@ -459,6 +495,25 @@ int convertToNum(char* command){
         }
     }
     return atoi(command);
+}
+
+void parseCommand(char *str, int nums[9]){
+    /*takes in string and fills in array with numbers from string*/
+    int j = 0;
+    int i;
+    for (int i = 0; i < strlen(str); i++){
+        if (str[i] != ' ' && str[i] != '/n'){
+            if (str[i] == 1 && str[i + 1] == 0){
+                nums[j] = 10;
+                j++;
+                i++;
+            }else{
+                nums[j] = str[i] - 48;
+                j++;
+            }
+        }
+    }
+    
 }
 
 
@@ -639,6 +694,9 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
     Node *posHead = NULL;
     Node *posTail = NULL;
     char command[LENGTH];
+    int inputNums[9] = {0};
+    int i;
+    int prime;
     Card c;
     commandEnter:
     if (*pHead == NULL){
@@ -704,7 +762,28 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
             Sleep(SLEEPL*2);
             goto commandEnter;
         }
-        c = removeCardInt(pHead, pTail, cardPlace);
+        c = findCardInt(pHead, pTail, cardPlace);
+        if (c.value == 0){ //shouldn't happen
+            printf("There was an error.");
+            Sleep(SLEEPL*2);
+            goto commandEnter;
+        }
+
+        printf("Which cards on the table? Type position on table separated by a space (e.g. 3 1 5).\n");
+        getCommand(command);
+        parseCommand(command, inputNums);
+        if (checkCards(c.value, inputNums) == 1){
+            removeCardInt(pHead, pTail, cardPlace);
+            for (int i = 0; i < 10; i++){
+                if(inputNums[i] == 0){
+                    break;
+                }
+                p1->numCards++;
+                prime = findPrimeVal(findCardInt(tHead, tTail, i).value);
+                removeCardInt(tHead, tTail, inputNums[i]);
+            }
+        }      
+
 
 
 
