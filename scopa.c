@@ -79,6 +79,22 @@ void resetNums(Node **head){
     }
 }
 
+Card findCardInt(Node **head, Node **tail, int n){
+    /* ∆ find any specified card ∆ */
+    Node *temp, *previous;
+    Card c;
+    c.value = 0;
+    c.suit = 0;
+    temp = *head;
+    while (temp != NULL){
+        if (temp->order == n){
+            return temp->data;
+        }
+        temp = temp->next;
+    }
+    return c;
+}
+
 int removeCard(Node **head, Node **tail, Card c){
     /* ∆ Removes any specified card ∆ */
     /* ◎ EDGECASES: end of list removed, any in middle, first removed */
@@ -673,16 +689,31 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
         /*Seven of coins, highest card count, highest number of coins, save the highest number card of each suit (primes), scopas*/
         
         /*Create funtion that can check if card is playable. can loop through each card for above funct.*/ 
-        checkPlayable((*pHead)->data, *tHead, *tTail, &posHead, &posTail);
-        if (posHead == NULL){
-            printf("There are no cards that can be captured with your hand.\n");
+        
+        // checkPlayable((*pHead)->data, *tHead, *tTail, &posHead, &posTail);
+        // if (posHead == NULL){
+        //     printf("There are no cards that can be captured with your hand.\n");
+        //     Sleep(SLEEPL*2);
+        // }
+
+        printf("Which card? Type either card or position in hand (i.e. 1, 2, 3)\n"); //put this bit in a function
+        getCommand(command);
+        cardPlace = convertToNum(command);
+        if (cardPlace <= 0  || cardPlace > (*pTail)->order){
+            printf("Please enter a valid number or card.\n");
             Sleep(SLEEPL*2);
+            goto commandEnter;
         }
+        c = removeCardInt(pHead, pTail, cardPlace);
+
+
+
+
+
+
         if (tHead == NULL){
             printf("SCOPA!\n");
-            p1->scopa++;
-            
-            
+            p1->scopa++;            
         }
 
     }else if ((compCom(command, "help") == 0)){
