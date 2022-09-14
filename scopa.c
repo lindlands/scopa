@@ -304,7 +304,7 @@ void printCards(Node *head){
     }
 }
 
-char* cardToString(Card* c, char s[12]){
+void cardToString(Card* c, char s[12]){
     int i = 0;
     int place = 0;
     if (c->value == 10){
@@ -721,11 +721,12 @@ void helpText(){
         }
 }
 
-void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
+void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail){
     char cStr[12] = {'\0'};
     int cardPlace = 0;
     Node *posHead = NULL;
     Node *posTail = NULL;
+    Node *filler = NULL;
     char command[LENGTH];
     int inputNums[9] = {0};
     int i;
@@ -802,6 +803,27 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
             goto commandEnter;
         }
 
+        system("cls");
+        printf("\n---------------------------------------\n");
+        c = findCardInt(pHead, pTail, cardPlace);
+        cardToString(&c, cStr);
+        printf("Your card: ");
+        printf("[");
+        printf(cStr);
+        printf("]\n\n");
+        filler = *tHead;
+        while (filler != NULL){
+            printf("-");
+            printf("%d", filler->order);
+            printf("- ");
+            cardToString(&(filler->data), cStr);
+            printf("[");
+            printf(cStr);
+            printf("]  \n");
+            filler = filler->next;
+        }
+        printf("\n");
+
         printf("Which cards on the table? Type position on table separated by a space (e.g. 3 1 5).\n");
         getCommand(command);
         parseCommand(command, inputNums);
@@ -817,18 +839,23 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
             flagForDeletion(tHead, inputNums);
             deleteFlags(tHead, tTail);
             removeCardInt(pHead, pTail, cardPlace);
-        }      
 
-
-
-
-
-
-
-        if (tHead == NULL){
+            if (tHead == NULL){
             printf("SCOPA!\n");
             p1->scopa++;            
         }
+
+        }else{
+            printf("Please enter a valid number or card.\n");
+            Sleep(SLEEPL*2);
+            system("cls");
+            printf("\n---------------------------------------\n");
+            printf("----PLAYER 1----\n");
+            displayCards(*pHead, opTail, *tHead);
+            goto commandEnter;
+        }   
+
+
 
     }else if ((compCom(command, "help") == 0)){
         helpText();
@@ -919,14 +946,14 @@ int main(void){
             playerBuffer();
             printf("----PLAYER 1----\n");
             displayCards(p1Head, p2Tail, tHead);
-            action(&p1, &p1Head, &p1Tail, &tHead, &tTail);
+            action(&p1, &p1Head, &p1Tail, p2Tail, &tHead, &tTail);
             turn = P2TURN;
         }else{
             printf("\n----PLAYER 2----\n");
             playerBuffer();
             printf("----PLAYER 2----\n");
             displayCards(p2Head, p1Tail, tHead);
-            action(&p2, &p2Head, &p2Tail, &tHead, &tTail);
+            action(&p2, &p2Head, &p2Tail, p1Tail, &tHead, &tTail);
             turn = P1TURN;
         }
 
