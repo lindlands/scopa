@@ -347,13 +347,27 @@ void flagForDeletion(Node **head, int nums[9]){
     while(filler != NULL){
         while(i < 10 && nums[i] != 0){
             if(nums[i] == filler->order){
-                filler->flag == -1;
+                filler->flag = -1;
                 break;
             }
             i++;
         }
         filler = filler->next;
         i = 0;
+    }
+}
+
+void deleteFlags(Node **head, Node **tail){
+    Node *filler = (*head);
+    Card c;
+    while (filler != NULL){
+        if (filler->flag == -1){
+            c = filler->data;
+            filler = filler->next;
+            removeCard(head, tail, c);
+        }else{
+            filler = filler->next;
+        }
     }
 }
 
@@ -801,6 +815,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
                 //removeCardInt(tHead, tTail, inputNums[i]);
             }
             flagForDeletion(tHead, inputNums);
+            deleteFlags(tHead, tTail);
             removeCardInt(pHead, pTail, cardPlace);
         }      
 
