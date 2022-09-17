@@ -304,22 +304,23 @@ void printCards(Node *head){
     }
 }
 
-void cardToString(Card* c, char s[12]){
+char cardToString(Card c, char str[12]){
     int i = 0;
     int place = 0;
-    if (c->value == 10){
-        s[place] = '1';
-        s[place + 1] = '0';
+    memset(str,0,strlen(str));
+    if (c.value == 10){
+        str[place] = '1';
+        str[place + 1] = '0';
         place++;
     }else{
-        s[place] = c->value + 48;
+        str[place] = c.value + 48;
     }
     place++;
     for (int i = 0; i < 12; i++){
-        if (c->suit[i] == '\000'){
+        if (c.suit[i] == '\000'){
             break;
         }
-        s[place] = c->suit[i];
+        str[place] = c.suit[i];
         place++;
     }
 }
@@ -806,7 +807,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         system("cls");
         printf("\n---------------------------------------\n");
         c = findCardInt(pHead, pTail, cardPlace);
-        cardToString(&c, cStr);
+        cardToString(c, cStr);
         printf("Your card: ");
         printf("[");
         printf(cStr);
@@ -816,7 +817,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
             printf("-");
             printf("%d", filler->order);
             printf("- ");
-            cardToString(&(filler->data), cStr);
+            cardToString(filler->data, cStr);
             printf("[");
             printf(cStr);
             printf("]  \n");
