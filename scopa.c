@@ -70,6 +70,7 @@ void addCard(Node **head, Node **tail, Card c){
 }
 
 void resetNums(Node **head){
+    /*Resets order value of nodes. Starts from 1*/
     int counter = 1;
     Node*temp = *head;
     while (temp != NULL){
@@ -168,7 +169,7 @@ Card removeCardInt(Node **head, Node **tail, int n){
     return c;
 }
 
-void merge(Node *rHead, Node *rTail, Node *lHead, Node *lTail){
+void merge(Node *rHead, Node *rTail, Node *lHead, Node *lTail){ //WIP●
     Node *rPoint, *lPoint;
     Node *head = NULL;
     Node *tail = NULL;
@@ -194,7 +195,7 @@ void merge(Node *rHead, Node *rTail, Node *lHead, Node *lTail){
     
 }
 
-void mergeSort(Node *head, Node *tail, Node**mergeHead, Node**mergeTail){
+void mergeSort(Node *head, Node *tail, Node**mergeHead, Node**mergeTail){ //WIP●
     Node *newTail;
     Node *newHead;
     Node *filler;
@@ -278,6 +279,7 @@ int findPrimeVal(int i){
 }
 
 void printCards(Node *head){
+    /*Prints all cards in given linked list*/
     Node* temp = head;
     int place = 0;
     if (head == NULL){
@@ -305,6 +307,7 @@ void printCards(Node *head){
 }
 
 char cardToString(Card c, char str[12]){
+    /*card formatted to [value of suit] and put in str[]*/
     int i = 0;
     int place = 0;
     memset(str,0,strlen(str));
@@ -343,10 +346,11 @@ int checkCards(int val, int nums[9], Node **head, Node **tail){
 }
 
 void flagForDeletion(Node **head, int nums[9]){
+    /*changes all nodes' flag values to -1 if their order values are in nums[]*/
     Node *filler = *head;
     int i = 0;
     while(filler != NULL){
-        while(i < 10 && nums[i] != 0){
+        while(i <= 9 && nums[i] != 0){
             if(nums[i] == filler->order){
                 filler->flag = -1;
                 break;
@@ -359,6 +363,7 @@ void flagForDeletion(Node **head, int nums[9]){
 }
 
 void deleteFlags(Node **head, Node **tail){
+    /*removes all nodes in linked list that have a flag value of -1*/
     Node *filler = (*head);
     Card c;
     while (filler != NULL){
@@ -372,7 +377,7 @@ void deleteFlags(Node **head, Node **tail){
     }
 }
 
-int playable(Card c, Node* tHead, Node* tTail, Node* matchH, Node* matchR){
+int playable(Card c, Node* tHead, Node* tTail, Node* matchH, Node* matchR){ //WIP●
     int temp;
     if (tHead == NULL){
         resetNums(&tHead);
@@ -420,7 +425,7 @@ int playable(Card c, Node* tHead, Node* tTail, Node* matchH, Node* matchR){
 }
 
 
-int checkPlayable(Card c, Node* tHead, Node* tTail, Node** matchH, Node** matchT){
+int checkPlayable(Card c, Node* tHead, Node* tTail, Node** matchH, Node** matchT){ //WIP●
     int sum;
     Node* focus = tHead;
     Node *subFocus;
@@ -470,7 +475,7 @@ int checkPlayable(Card c, Node* tHead, Node* tTail, Node** matchH, Node** matchT
     // }
 }
 
-int rePlayable(int sum, Node* focus, Node* matchH, Node* matchT){
+int rePlayable(int sum, Node* focus, Node* matchH, Node* matchT){ //WIP●
     //sum to start is 9
     int subsum = sum;
     subsum -= focus->data.value; //subsum == 4
@@ -487,6 +492,7 @@ int rePlayable(int sum, Node* focus, Node* matchH, Node* matchT){
 /*------------------Command functions------------------*/
 
 void toLower(char* str){
+    /*converts string to lowercase*/
     int i;
     int j = strlen(str);
     for(int i = 0; i < j; i++){
@@ -504,6 +510,7 @@ int getCommand(char *arr){
 }
 
 int compCom(char *input, char *match){
+    /*compares two strings to see if they match*/
     int result;
     int len;
     //toLower(match);
@@ -555,6 +562,7 @@ void parseCommand(char *str, int nums[9]){
 /*-----------------Game initialization-----------------*/
 
 void printPicture(char str[]){
+    /*takes in .txt file (extension included in str) and prints it*/
     FILE *txtfile;
     char c;
     txtfile = fopen(str, "r");
@@ -570,6 +578,7 @@ void printPicture(char str[]){
 }
 
 void initializeDeck(Card* deck){
+    /*adds randomized cards to deck only if deck is fully initialized*/
     int i;
     int counter = 0;
     int num;
@@ -605,6 +614,7 @@ void initializeDeck(Card* deck){
 }
 
 void dealCards(Card* deck, Node**head1, Node**Tail1, Node**head2, Node**Tail2, int* place){
+    /*adds three cards to both players' hands*/
     int i = 0;
     Card c;
     for (int i = 0; i < 3; i++){
@@ -618,6 +628,7 @@ void dealCards(Card* deck, Node**head1, Node**Tail1, Node**head2, Node**Tail2, i
 }
 
 void displayCards(Node*playerHead, Node*opTail, Node*tableHead){
+    /*prints cards of player and table, and the number of cards of the opponent.*/
     printf("The cards in your hand are: ");
     printCards(playerHead);
     printf("The cards on the table are: ");
@@ -636,6 +647,7 @@ void displayCards(Node*playerHead, Node*opTail, Node*tableHead){
 }
 
 void playerBuffer(){
+    /*displays 'screen' that waits for \n to continue*/
     char enterCheck = 'a';
     printf("Press ENTER to start turn.\n");
     while (enterCheck != '\n'){enterCheck = getchar();}
@@ -644,6 +656,7 @@ void playerBuffer(){
 }
 
 void dealText(){
+    /*'amimation' for dealing cards*/
     int i = 0;
     for (int i = 0; i < 3; i++){
         printf("/ ");
@@ -660,6 +673,7 @@ void dealText(){
 }
 
 void helpText(){
+    /*displays the rules*/
     help_rules:
     system("cls");
     char command[LENGTH] ={'\0'};
@@ -723,6 +737,7 @@ void helpText(){
 }
 
 void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail){
+    /*the player's turn: displays options and carries out specified action*/
     char cStr[12] = {'\0'};
     int cardPlace = 0;
     Node *posHead = NULL;
