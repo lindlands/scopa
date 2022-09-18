@@ -260,7 +260,40 @@ void deleteFlags(Node **head, Node **tail){
     }
 }
 
-/*-----------------Card funtions-----------------*/
+/*-----------------Score funtions-----------------*/
+
+void initializeScore(Score *s){
+    int i;
+    s->numCards = 0;
+    s->numCoins = 0;
+    for (int i = 0; i < 4; i++){
+        s->primes[i] = 0;
+    }
+    s->scopa = 0;
+    s->sevenCoins = 0;
+}
+
+int findPrimeVal(int i){
+    /* ∆ calculates the correct adjusted prime value of one number. ∆ */
+    
+    if (i == 7){
+        return 21;
+    }else if (i == 6){
+        return 18;
+    }else if (i == 1){
+        return 16;
+    }else if (i == 5){
+        return 15;
+    }else if (i == 4){
+        return 14;
+    }else if (i == 3){
+        return 13;
+    }else if (i == 2){
+        return 12;
+    }else{ /*face cards*/
+        return 10;
+    }
+}
 
 int findPrime(Score s){
     /* ∆ calculates the correct adjusted score based on Score's primes[] field. returns score. ∆ */
@@ -288,27 +321,36 @@ int findPrime(Score s){
     return total;
 }
 
-int findPrimeVal(int i){
-    /* ∆ calculates the correct adjusted prime value of one number. ∆ */
-    
-    if (i == 7){
-        return 21;
-    }else if (i == 6){
-        return 18;
-    }else if (i == 1){
-        return 16;
-    }else if (i == 5){
-        return 15;
-    }else if (i == 4){
-        return 14;
-    }else if (i == 3){
-        return 13;
-    }else if (i == 2){
-        return 12;
-    }else{ /*face cards*/
-        return 10;
+void scoreCard(Score *score, Card c){
+    int prime;
+    score->numCards++;
+    prime = findPrimeVal(c.value);
+    if (c.suit == " of Cups"){
+        if (score->primes[0] < prime){
+            score->primes[0] = prime;
+        }
+    }else if (c.suit == " of Coins"){
+        if (c.value == 7){ //7 of coins!
+            score->sevenCoins = 1;
+        }
+        if (score->primes[1] < prime){
+            score->primes[1] = prime;
+        }
+        score->numCoins++;
+    }else if (c.suit == " of Swords"){
+        if (score->primes[2] < prime){
+            score->primes[2] = prime;
+        }
+    }else if (c.suit == " of Clubs"){
+        if (score->primes[3] < prime){
+            score->primes[3] = prime;
+        }
     }
 }
+
+
+/*-----------------Card funtions-----------------*/
+
 
 void printCards(Node *head){
     /*Prints all cards in given linked list*/
@@ -486,12 +528,6 @@ int rePlayable(int sum, Node* focus, Node* matchH, Node* matchT){ //WIP●
         rePlayable(subsum, focus, matchH, matchT);
     }
 
-}
-
-void scoreCard(Score *score, Card c){
-    int prime;
-    score->numCards++;
-    prime = findPrimeVal(c.value);
 }
 
 
@@ -855,8 +891,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
                 if(inputNums[i] == 0){
                     break;
                 }
-                p1->numCards++;
-                prime = findPrimeVal(findCardInt(tHead, tTail, inputNums[i]).value);
+                scoreCard(p1, findCardInt(tHead, tTail, inputNums[i]));
                 //removeCardInt(tHead, tTail, inputNums[i]);
             }
             flagForDeletion(tHead, inputNums);
@@ -927,6 +962,9 @@ int main(void){
     Score p1;
     Score p2;
     int turn = P1TURN;
+
+    initializeScore(&p1);
+    initializeScore(&p2);
 
     //printPicture(".txt");
     printf("\n-----------------SCOPA-----------------\n");
