@@ -228,6 +228,38 @@ void mergeSort(Node *head, Node *tail, Node**mergeHead, Node**mergeTail){ //WIP�
 
 }
 
+void flagForDeletion(Node **head, int nums[9]){
+    /*changes all nodes' flag values to -1 if their order values are in nums[]*/
+    Node *filler = *head;
+    int i = 0;
+    while(filler != NULL){
+        while(i <= 9 && nums[i] != 0){
+            if(nums[i] == filler->order){
+                filler->flag = -1;
+                break;
+            }
+            i++;
+        }
+        filler = filler->next;
+        i = 0;
+    }
+}
+
+void deleteFlags(Node **head, Node **tail){
+    /*removes all nodes in linked list that have a flag value of -1*/
+    Node *filler = (*head);
+    Card c;
+    while (filler != NULL){
+        if (filler->flag == -1){
+            c = filler->data;
+            filler = filler->next;
+            removeCard(head, tail, c);
+        }else{
+            filler = filler->next;
+        }
+    }
+}
+
 /*-----------------Card funtions-----------------*/
 
 int findPrime(Score s){
@@ -345,37 +377,6 @@ int checkCards(int val, int nums[9], Node **head, Node **tail){
     return 0;
 }
 
-void flagForDeletion(Node **head, int nums[9]){
-    /*changes all nodes' flag values to -1 if their order values are in nums[]*/
-    Node *filler = *head;
-    int i = 0;
-    while(filler != NULL){
-        while(i <= 9 && nums[i] != 0){
-            if(nums[i] == filler->order){
-                filler->flag = -1;
-                break;
-            }
-            i++;
-        }
-        filler = filler->next;
-        i = 0;
-    }
-}
-
-void deleteFlags(Node **head, Node **tail){
-    /*removes all nodes in linked list that have a flag value of -1*/
-    Node *filler = (*head);
-    Card c;
-    while (filler != NULL){
-        if (filler->flag == -1){
-            c = filler->data;
-            filler = filler->next;
-            removeCard(head, tail, c);
-        }else{
-            filler = filler->next;
-        }
-    }
-}
 
 int playable(Card c, Node* tHead, Node* tTail, Node* matchH, Node* matchR){ //WIP●
     int temp;
@@ -485,6 +486,12 @@ int rePlayable(int sum, Node* focus, Node* matchH, Node* matchT){ //WIP●
         rePlayable(subsum, focus, matchH, matchT);
     }
 
+}
+
+void scoreCard(Score *score, Card c){
+    int prime;
+    score->numCards++;
+    prime = findPrimeVal(c.value);
 }
 
 
@@ -950,7 +957,12 @@ int main(void){
     while (state == 0){ /*-------------------------------------------------------------*/
 
         if (place >= 34){ //no more cards for a full deal
-            
+            if (turn == P1TURN){
+                Node * temp = tHead;
+                while(tHead != NULL){
+                    //score
+                }
+            }
         }
 
         if(p1Head == NULL && p2Head == NULL){
