@@ -690,8 +690,8 @@ void helpText(){
     printf("\n-----------------GAMEPLAY-----------------\n");
     printf("Each player will receive 3 cards, and there are 4 face-up cards played on the table.\n");
     printf("You and the opponent will take turns either placing a card on the table or playing a card.\n\n");
-    printf("Placing a card on the table simply adds it to the rest of the cards. You can only do this when none of your cards can be played.\n\n");
-    printf("Playing a card will capture cards on the table.\n");
+    printf("Placing a card on the table simply adds it to the rest of the cards. A card that can capture a card on the table cannot be played.\n\n");
+    printf("Capturing cards involves playing a card from your hand.\n");
     printf("You can capture a card it either matching the value of the card you play, or the sum of several cards adds up to your played card.\n\n");
     printf("After the card is played, both your card and the captured cards will be removed.\n");
     printf("When both the player and opponent run out of cards, then three cards are dealt to each.\n\n");
@@ -948,6 +948,10 @@ int main(void){
     } 
 
     while (state == 0){ /*-------------------------------------------------------------*/
+
+        if (place >= 34){ //no more cards for a full deal
+            
+        }
 
         if(p1Head == NULL && p2Head == NULL){
             dealCards(deck, &p1Head, &p1Tail, &p2Head, &p2Tail, &place);
