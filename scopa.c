@@ -348,6 +348,13 @@ void scoreCard(Score *score, Card c){
     }
 }
 
+void scoreDeck(Score *s, Node *head){
+    while(head != NULL){
+        scoreCard(s, head->data);
+        head = head->next;
+    }
+}
+
 
 /*-----------------Card funtions-----------------*/
 
@@ -996,10 +1003,9 @@ int main(void){
 
         if (place >= 34){ //no more cards for a full deal
             if (turn == P1TURN){
-                Node * temp = tHead;
-                while(tHead != NULL){
-                    //score
-                }
+                scoreDeck(&p2, tHead);
+            }else{
+                scoreDeck(&p1, tHead);
             }
         }
 
