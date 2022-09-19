@@ -33,6 +33,7 @@ typedef struct score {
     int sevenCoins;
     int numCoins;
     int primes[4]; /*Cards are sorted as follows: cups, coins, swords, clubs*/
+    int primeTotal;
     int scopa;
 
 }Score;
@@ -271,6 +272,33 @@ void initializeScore(Score *s){
     }
     s->scopa = 0;
     s->sevenCoins = 0;
+}
+
+void printScore(Score *s){
+    int prime = 0;
+    int i;
+    printf("Number of cards captured: ");
+    printf("%d", s->numCards);
+    printf("\n");
+    printf("Number of Coins captured: ");
+    printf("%d", s->numCoins);
+    printf("\n");
+    printf("Number of Scopas: ");
+    printf("%d", s->scopa);
+    printf("\n");
+    printf("Prime: ");
+    for (int i = 0; i < 4; i++){
+        prime += s->primes[i];
+    }
+    s->primeTotal = prime; //calculates primes for later
+    printf("%d", prime);
+    printf("\n");
+    if (s->sevenCoins == 1){
+        printf("You captured the 7 of Coins.\n");
+    }
+
+
+    
 }
 
 int findPrimeVal(int i){
@@ -668,6 +696,9 @@ void dealCards(Card* deck, Node**head1, Node**Tail1, Node**head2, Node**Tail2, i
     int i = 0;
     Card c;
     for (int i = 0; i < 3; i++){
+        if (*place >= 39){
+            break;
+        }
         c = deck[*place];
         addCard(head1, Tail1, c);
         *place = (*place)+1;
@@ -1001,14 +1032,6 @@ int main(void){
 
     while (state == 0){ /*-------------------------------------------------------------*/
 
-        if (place >= 34){ //no more cards for a full deal
-            if (turn == P1TURN){
-                scoreDeck(&p2, tHead);
-            }else{
-                scoreDeck(&p1, tHead);
-            }
-        }
-
         if(p1Head == NULL && p2Head == NULL){
             dealCards(deck, &p1Head, &p1Tail, &p2Head, &p2Tail, &place);
             dealText();
@@ -1033,9 +1056,27 @@ int main(void){
             turn = P1TURN;
         }
 
+        if (place >= 39){ //no more cards for a full deal
+            if (turn == P1TURN){
+                scoreDeck(&p2, tHead);
+            }else{
+                scoreDeck(&p1, tHead);
+            }
+            state = 1;
+        }
+
         system("cls");
         printf("\n---------------------------------------\n");
     }
+
+    printf("--SCORES--\n\n");
+    printf("PLAYER 1: \n");
+    printScore(&p1);
+    printf("\n\n");
+    printf("PLAYER 2: \n");
+    printScore(&p2);
+    playerBuffer();
+
 
     
 
