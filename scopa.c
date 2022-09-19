@@ -1034,6 +1034,14 @@ int main(void){
 
         if(p1Head == NULL && p2Head == NULL){
             dealCards(deck, &p1Head, &p1Tail, &p2Head, &p2Tail, &place);
+            if (p1Head == NULL && p2Head == NULL){ //no more cards
+                if (turn == P1TURN){
+                    scoreDeck(&p2, tHead);
+                }else{
+                    scoreDeck(&p1, tHead);
+                }
+                state = 1;
+            }
             dealText();
             printf("------The cards have been dealt.------\n\n");
         }
@@ -1054,15 +1062,6 @@ int main(void){
             displayCards(p2Head, p1Tail, tHead);
             action(&p2, &p2Head, &p2Tail, p1Tail, &tHead, &tTail);
             turn = P1TURN;
-        }
-
-        if (p1Head == NULL && p2Head == NULL){ //no more cards
-            if (turn == P1TURN){
-                scoreDeck(&p2, tHead);
-            }else{
-                scoreDeck(&p1, tHead);
-            }
-            state = 1;
         }
 
         system("cls");
