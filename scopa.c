@@ -1000,6 +1000,8 @@ int main(void){
     Score p1;
     Score p2;
     int turn = P1TURN;
+    int p1Total = 0;
+    int p2Total = 0;
 
     initializeScore(&p1);
     initializeScore(&p2);
@@ -1031,7 +1033,7 @@ int main(void){
     } 
 
     while (state == 0){ /*-------------------------------------------------------------*/
-
+        
         if(p1Head == NULL && p2Head == NULL){
             dealCards(deck, &p1Head, &p1Tail, &p2Head, &p2Tail, &place);
             if (p1Head == NULL && p2Head == NULL){ //no more cards
@@ -1074,6 +1076,49 @@ int main(void){
     printf("\n\n");
     printf("PLAYER 2: \n");
     printScore(&p2);
+    printf("\n");
+
+    if (p1.numCards > p2.numCards){
+        p1Total++;
+    }else if (p1.numCards < p2.numCards){
+        p2Total++;
+    }
+    if (p1.numCoins > p2.numCoins){
+        p1Total++;
+    }else if (p1.numCards > p2.numCards){
+        p2Total++;
+    }
+    if (p1.scopa > p2.scopa){
+        p1Total++;
+    }else if (p1.scopa > p2.scopa){
+        p2Total++;
+    }
+    if (p1.sevenCoins > p2.sevenCoins){
+        p1Total++;
+    }else if (p1.sevenCoins > p2.sevenCoins){
+        p2Total++;
+    }
+    if (p1.primeTotal > p2.primeTotal){
+        p1Total++;
+    }else if (p1.primeTotal > p2.primeTotal){
+        p2Total++;
+    }
+
+    printf("PLAYER 1 total: ");
+    printf("%d", p1Total);
+    printf("\n");
+
+    printf("PLAYER 2 total: ");
+    printf("%d", p2Total);
+    printf("\n");
+
+    if (p1Total > p2Total){
+        printf("\nPLAYER 1 wins!");
+    }else if (p2Total > p1Total){
+        printf("\nPLAYER 2 wins!");
+    }else{
+        printf("\nPLAYER 1 and PLAYER 2 are tied!");
+    }
     printf("\n");
     playerBuffer();
 
