@@ -1056,7 +1056,7 @@ int main(void){
             turn = P1TURN;
         }
 
-        if (place >= 39){ //no more cards for a full deal
+        if (p1Head == NULL && p2Head == NULL){ //no more cards
             if (turn == P1TURN){
                 scoreDeck(&p2, tHead);
             }else{
@@ -1075,6 +1075,7 @@ int main(void){
     printf("\n\n");
     printf("PLAYER 2: \n");
     printScore(&p2);
+    printf("\n");
     playerBuffer();
 
 
