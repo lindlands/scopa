@@ -280,12 +280,15 @@ void printScore(Score *s){
     printf("Number of cards captured: ");
     printf("%d", s->numCards);
     printf("\n");
+    Sleep(SLEEPL);
     printf("Number of Coins captured: ");
     printf("%d", s->numCoins);
     printf("\n");
+    Sleep(SLEEPL);
     printf("Number of Scopas: ");
     printf("%d", s->scopa);
     printf("\n");
+    Sleep(SLEEPL);
     printf("Prime: ");
     for (int i = 0; i < 4; i++){
         prime += s->primes[i];
@@ -293,6 +296,7 @@ void printScore(Score *s){
     s->primeTotal = prime; //calculates primes for later
     printf("%d", prime);
     printf("\n");
+    Sleep(SLEEPL);
     if (s->sevenCoins == 1){
         printf("You captured the 7 of Coins.\n");
     }
@@ -727,13 +731,19 @@ void displayCards(Node*playerHead, Node*opTail, Node*tableHead){
     }
 }
 
-void playerBuffer(){
+void buffer(char *c){
     /*displays 'screen' that waits for \n to continue*/
     char enterCheck = 'a';
-    printf("Press ENTER to start turn.\n");
+    printf(c);
     while (enterCheck != '\n'){enterCheck = getchar();}
     system("cls");
     printf("\n---------------------------------------\n");
+}
+
+void playerBuffer(){
+    /*displays 'screen' that waits for \n to continue*/
+    char * str = "Press ENTER to start turn.\n";
+    buffer(str);
 }
 
 void dealText(){
@@ -1033,6 +1043,8 @@ int main(void){
     } 
 
     while (state == 0){ /*-------------------------------------------------------------*/
+
+    place = 39;
         
         if(p1Head == NULL && p2Head == NULL){
             dealCards(deck, &p1Head, &p1Tail, &p2Head, &p2Tail, &place);
@@ -1073,9 +1085,11 @@ int main(void){
     printf("--SCORES--\n\n");
     printf("PLAYER 1: \n");
     printScore(&p1);
+    Sleep(SLEEPL*2);
     printf("\n\n");
     printf("PLAYER 2: \n");
     printScore(&p2);
+    Sleep(SLEEPL*2);
     printf("\n");
 
     if (p1.numCards > p2.numCards){
@@ -1085,22 +1099,22 @@ int main(void){
     }
     if (p1.numCoins > p2.numCoins){
         p1Total++;
-    }else if (p1.numCards > p2.numCards){
+    }else if (p2.numCards > p1.numCards){
         p2Total++;
     }
     if (p1.scopa > p2.scopa){
         p1Total++;
-    }else if (p1.scopa > p2.scopa){
+    }else if (p2.scopa > p1.scopa){
         p2Total++;
     }
     if (p1.sevenCoins > p2.sevenCoins){
         p1Total++;
-    }else if (p1.sevenCoins > p2.sevenCoins){
+    }else if (p2.sevenCoins > p1.sevenCoins){
         p2Total++;
     }
     if (p1.primeTotal > p2.primeTotal){
         p1Total++;
-    }else if (p1.primeTotal > p2.primeTotal){
+    }else if (p2.primeTotal > p1.primeTotal){
         p2Total++;
     }
 
@@ -1119,8 +1133,8 @@ int main(void){
     }else{
         printf("\nPLAYER 1 and PLAYER 2 are tied!");
     }
-    printf("\n");
-    playerBuffer();
+    printf("\n\n");
+    buffer("Press ENTER to exit.");
 
 
     
