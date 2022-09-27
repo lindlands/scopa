@@ -14,6 +14,7 @@
 #define P1TURN -1
 #define P2TURN 1
 #define HIDE -1
+#define DECKSIZE 40
 
 /*-------------------structs-------------------*/
 
@@ -672,7 +673,7 @@ void initializeDeck(Card* deck){
     int counter = 0;
     int num;
     int found = 1;
-    Card pile[40];
+    Card pile[DECKSIZE];
     for (int i = 1; i <= 10; i++){
         pile[counter].value = i;
         pile[counter].suit = " of Cups";
@@ -688,9 +689,9 @@ void initializeDeck(Card* deck){
         counter++;
     }
     counter = 0;
-    for (int i = 0; i < 40; i++){
+    for (int i = 0; i < DECKSIZE; i++){
         while (found == 1){ /*can just create array of indexes*/
-            num = (rand() %(40));
+            num = (rand() %(DECKSIZE));
             if (deck[num].value == 0){
                 deck[num].value = pile[i].value;
                 deck[num].suit = pile[i].suit;
@@ -732,8 +733,15 @@ void dealCards(Card* deck, Node**head1, Node**Tail1, Node**head2, Node**Tail2, i
     }
 }
 
-void displayCards(Node*playerHead, Node*opTail, Node*tableHead){
+void displayCards(Node*playerHead, Node*opTail, Node*tableHead, int turn){
     /*prints cards of player and table, and the number of cards of the opponent.*/
+    system("cls");
+    printf("\n---------------------------------------\n");
+    if (turn == P1TURN){
+        printf("----PLAYER 1----\n");
+    }else{
+        printf("----PLAYER 2----\n");
+    }
     printf("The cards in your hand are: ");
     printCards(playerHead);
     printf("The cards on the table are: ");
@@ -847,7 +855,7 @@ void helpText(){
         }
 }
 
-void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail){
+void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail, int turn){
     /*the player's turn: displays options and carries out specified action*/
     char cStr[12] = {'\0'};
     int cardPlace = 0;
@@ -872,8 +880,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         getCommand(command);
         cardPlace = convertToNum(command);
         if (cardPlace > 0  && cardPlace <= (*pTail)->order){
-            //checkPlayable(p1Head->data, tHead, tTail, posHead, posTail); /* thead/ tTail are filler for now*/
-            //addCard(&posHead, &posTail, c);
+            //checkPlayable
             if (posHead != NULL){
                 printf("A card can only be placed on the table when there are no cards to capture.\n");
                 Sleep(SLEEPL*2);
@@ -889,32 +896,8 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
             
         }
 
-        // if (compCom(command, cStr) == 0){
-        //     /*remove the card from the linked list !!!! End marker? >>needs traversal so hmm. probably fine?*/
-        //     /*need to be able to remove from middle on linked list*/
-        //     /*put it on the end of the table cards (end marker!!)*/
-        //     c = removeCardInt(&p1Head, &p1Tail, 1);
-        //     addCard(&tHead, &tTail, c);
-
-        // }
         
-
     }else if (compCom(command, "capture card") == 0){
-        /*1) select card from list*/
-        /*remove from linked list*/
-        /*remove from hand ^^use same function as above? as picking card and removing from hand. extra flavor goes after*/
-        /*Have to have New structure of "won" cards, saved for later.*/
-        /*Probably can go through elaborate checks to find:*/
-        /*Seven of coins, highest card count, highest number of coins, save the highest number card of each suit (primes), scopas*/
-        
-        /*Create funtion that can check if card is playable. can loop through each card for above funct.*/ 
-        
-        // checkPlayable((*pHead)->data, *tHead, *tTail, &posHead, &posTail);
-        // if (posHead == NULL){
-        //     printf("There are no cards that can be captured with your hand.\n");
-        //     Sleep(SLEEPL*2);
-        // }
-
         printf("Which card from your hand do you want to play? Type position in hand (i.e. 1, 2, 3).\n"); //put this bit in a function
         getCommand(command);
         cardPlace = convertToNum(command);
@@ -974,10 +957,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         }else{
             printf("Please enter a valid number or card.\n");
             Sleep(SLEEPL*2);
-            system("cls");
-            printf("\n---------------------------------------\n");
-            printf("----PLAYER 1----\n");
-            displayCards(*pHead, opTail, *tHead);
+            displayCards(*pHead, opTail, *tHead, turn);
             goto commandEnter;
         }   
 
@@ -985,9 +965,13 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
 
     }else if ((compCom(command, "check deck") == 0)){
         deckSize(cardPlace);
+        Sleep(SLEEPL*2);
+        displayCards(*pHead, opTail, *tHead, turn);
         goto commandEnter;
     }else if ((compCom(command, "help") == 0)){
         helpText();
+        displayCards(*pHead, opTail, *tHead, turn);
+        goto commandEnter;
     }else{
         goto commandEnter;
     }
@@ -1019,7 +1003,7 @@ int main(void){
     c.value = 0;
     c.suit = "a";
     Card cardTable[12] = {c};
-    Card deck[40] = {c};
+    Card deck[DECKSIZE] = {c};
     Card playerHand[12] = {c};
     Card opHand[12] = {c};
     int place = 0;
@@ -1081,16 +1065,14 @@ int main(void){
         if(turn == P1TURN){
             printf("\n----PLAYER 1----\n");
             playerBuffer();
-            printf("----PLAYER 1----\n");
-            displayCards(p1Head, p2Tail, tHead);
-            action(&p1, &p1Head, &p1Tail, p2Tail, &tHead, &tTail);
+            displayCards(p1Head, p2Tail, tHead, turn);
+            action(&p1, &p1Head, &p1Tail, p2Tail, &tHead, &tTail, turn);
             turn = P2TURN;
         }else{
             printf("\n----PLAYER 2----\n");
             playerBuffer();
-            printf("----PLAYER 2----\n");
-            displayCards(p2Head, p1Tail, tHead);
-            action(&p2, &p2Head, &p2Tail, p1Tail, &tHead, &tTail);
+            displayCards(p2Head, p1Tail, tHead, turn);
+            action(&p2, &p2Head, &p2Tail, p1Tail, &tHead, &tTail, turn);
             turn = P1TURN;
         }
 
