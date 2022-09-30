@@ -138,7 +138,7 @@ Card removeCardInt(Node **head, Node **tail, int n){
     temp = *head;
     previous = *head;
     /*first node*/
-    if (temp->order == n){
+     if (temp->order == n){
         if ((*head) == (*tail)){
             *head = (*head)->next;
             c = temp->data;
@@ -170,6 +170,12 @@ Card removeCardInt(Node **head, Node **tail, int n){
         temp = temp->next;
     }
     return c;
+}
+
+void removeList(Node **head, Node **tail){
+    while ((*head) != NULL){
+        removeCardInt(head, tail, 1);
+    }
 }
 
 /*WIP mergesort function for list of cards*/
@@ -978,9 +984,6 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
 }
 
 
-
-
-
 /*------------------------------------------------------*/
 
 
@@ -1134,6 +1137,11 @@ int main(void){
     printf("\n\n");
     buffer("Press ENTER to exit.");
 
+
+    removeList(&p1Head, &p1Tail);
+    removeList(&p2Head, &p2Tail);
+    removeList(&tHead, &tTail);
+    removeList(&posHead, &posTail);
 
     
 
