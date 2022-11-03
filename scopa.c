@@ -1020,6 +1020,12 @@ int main(void){
     int p1Total = 0;
     int p2Total = 0;
 
+    char *str1 = "uhhfruit";
+    char *str2 = "fruit";
+
+    i = strcmp(str2, &str1[3]);
+    i = strcmp(str2, &str1[2]);
+
     initializeScore(&p1);
     initializeScore(&p2);
 
