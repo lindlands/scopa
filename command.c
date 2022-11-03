@@ -9,7 +9,7 @@ void toLower(char* str){
     /*converts string to lowercase*/
     int i;
     int j = strlen(str);
-    for(int i = 0; i < j; i++){
+    for(i = 0; i < j; i++){
         if (str[i] == '\000'){
             break;
         }
@@ -17,7 +17,7 @@ void toLower(char* str){
     }
 }
 
-int getCommand(char *arr){
+void getCommand(char *arr){
     fgets(arr, LENGTH, stdin);
     toLower(arr);
     printf("\n");
@@ -39,12 +39,13 @@ int compCom(char *input, char *match){
         }
         return result;
     }
+    return -1;
 }
 
 int convertToNum(char* command){
     /* takes in string and returns int if possible. else, returns -1. */
     int i;
-    for (int i = 0; i < strlen(command) - 1; i++){
+    for (i = 0; i < strlen(command) - 1; i++){
         if(!isdigit(command[i])){
             return -1;
         }
@@ -56,7 +57,7 @@ void parseCommand(char *str, int nums[INPUTLEN]){
     /*takes in string and fills in array with numbers from string*/
     int j = 0;
     int i;
-    for (int i = 0; i < strlen(str); i++){
+    for (i = 0; i < strlen(str); i++){
         if (str[i] != ' ' && str[i] != '\n'){
             if (str[i] == 1 && str[i + 1] == 0){
                 nums[j] = 10;

@@ -5,11 +5,6 @@
 #include "macros.h"
 
 
-void createList(){
-    Card c;
-    List* list = (List*)malloc(sizeof(List));
-}
-
 void addCard(Node **head, Node **tail, Card c){
     /* ∆ Adds specified card to the end of llist. ∆ */
     Node* temp = (Node*)malloc(sizeof(Node));
@@ -41,7 +36,7 @@ void resetNums(Node **head){
 
 Card findCardInt(Node **head, Node **tail, int n){
     /* ∆ find any specified card ∆ */
-    Node *temp, *previous;
+    Node *temp;
     Card c;
     c.value = 0;
     c.suit = 0;
@@ -173,7 +168,7 @@ void removeList(Node **head, Node **tail){
 //     }
 //     place = (tail->order - head->order + 1)/2;
 //     filler = head;
-//     for (int i = 0; i <= place; i++){
+//     for (i = 0; i <= place; i++){
 //         if (i == place){
 //             newHead = filler;
 //         }else{

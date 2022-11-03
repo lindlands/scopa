@@ -44,7 +44,7 @@ void initializeScore(Score *s){
     int i;
     s->numCards = 0;
     s->numCoins = 0;
-    for (int i = 0; i < NUMSUITS; i++){
+    for (i = 0; i < NUMSUITS; i++){
         s->primes[i] = 0;
     }
     s->scopa = 0;
@@ -67,7 +67,7 @@ void printScore(Score *s){
     printf("\n");
     Sleep(SLEEPL);
     printf("Prime: ");
-    for (int i = 0; i < NUMSUITS; i++){
+    for (i = 0; i < NUMSUITS; i++){
         prime += s->primes[i];
     }
     s->primeTotal = prime; //calculates primes for later
@@ -107,7 +107,7 @@ int findPrime(Score s){
     /* ∆ calculates the correct adjusted score based on Score's primes[] field. returns score. ∆ */
     int i;
     int total = 0;
-    for (int i = 0; i < NUMSUITS; i++){
+    for (i = 0; i < NUMSUITS; i++){
         if (s.primes[i] == 7){
             total += 21;
         }else if (s.primes[i] == 6){
@@ -208,9 +208,9 @@ void printCards(Node *head){
     }
 }
 
-char cardToString(Card c, char str[12]){
+void cardToString(Card c, char str[12]){
     /*card formatted to [value of suit] and put in str[]*/
-    int i = 0;
+    int i;
     int place = 0;
     memset(str,0,strlen(str));
     if (c.value == 10){
@@ -221,7 +221,7 @@ char cardToString(Card c, char str[12]){
         str[place] = c.value + 48;
     }
     place++;
-    for (int i = 0; i < 12; i++){
+    for (i = 0; i < 12; i++){
         if (c.suit[i] == '\000'){
             break;
         }
@@ -233,7 +233,6 @@ char cardToString(Card c, char str[12]){
 int checkCards(int val, int nums[INPUTLEN], Node **head, Node **tail){
     /*verifies that list adds up to chosen value*/
     int i;
-    int cardVal;
     Card c;
     int counter = 0;
     while(nums[i] != 0 && i <= INPUTLEN){
@@ -274,7 +273,7 @@ int checkCards(int val, int nums[INPUTLEN], Node **head, Node **tail){
 
 //     // j = tTail->order;
 //     // focus = tHead;
-//     // for (int i = 0; i < j; i++){
+//     // for (i = 0; i < j; i++){
 //     //     while(focus != NULL){
 //     //         temp = temp - tHead->data.value;
 //     //         if (temp == 0){ //if reach match
@@ -318,7 +317,7 @@ int checkCards(int val, int nums[INPUTLEN], Node **head, Node **tail){
 //     // /*note that this implies a list of greater than one*/
 //     // focus = tHead;
 //     // subFocus = tHead;
-//     // for (int i = 0; i < tTail->order; i++){ //for each focus
+//     // for (i = 0; i < tTail->order; i++){ //for each focus
 //     //     //subFocus = subFocus->next; //this needs to change
 //     //     sum = c.value - focus->data.value;
 //     //     if (sum == 0){
@@ -386,7 +385,7 @@ void initializeDeck(Card* deck){
     int num;
     int found = 1;
     Card pile[DECKSIZE];
-    for (int i = 1; i <= 10; i++){
+    for (i = 1; i <= 10; i++){
         pile[counter].value = i;
         pile[counter].suit = " of Cups";
         counter++;
@@ -401,7 +400,7 @@ void initializeDeck(Card* deck){
         counter++;
     }
     counter = 0;
-    for (int i = 0; i < DECKSIZE; i++){
+    for (i = 0; i < DECKSIZE; i++){
         srand(time(NULL));
         while (found == 1){ /*can just create array of indexes*/
             num = (rand() %(DECKSIZE));
@@ -431,9 +430,9 @@ void deckSize(int place){
 
 void dealCards(Card* deck, Node**head1, Node**Tail1, Node**head2, Node**Tail2, int* place){
     /*adds three cards to both players' hands*/
-    int i = 0;
+    int i;
     Card c;
-    for (int i = 0; i < HANDSIZE; i++){
+    for (i = 0; i < HANDSIZE; i++){
         if (*place >= 39){
             break;
         }
@@ -489,13 +488,13 @@ void playerBuffer(){
 
 void dealText(){
     /*'amimation' for dealing cards*/
-    int i = 0;
-    for (int i = 0; i < 3; i++){
+    int i;
+    for (i = 0; i < 3; i++){
         printf("/ ");
         Sleep(SLEEPL/2);
     }
     printf("Dealing Cards ");
-    for (int i = 0; i < 3; i++){
+    for (i = 0; i < 3; i++){
         printf("/ ");
         Sleep(SLEEPL/2);
     }
@@ -578,7 +577,6 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
     char command[LENGTH];
     int inputNums[INPUTLEN] = {0};
     int i;
-    int prime;
     Card c;
     commandEnter:
     if (*pHead == NULL){
@@ -657,7 +655,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         getCommand(command);
         parseCommand(command, inputNums);
         if (checkCards(c.value, inputNums, tHead, tTail) == 1){
-            for (int i = 0; i < 10; i++){
+            for (i = 0; i < 10; i++){
                 if(inputNums[i] == 0){
                     break;
                 }
@@ -716,18 +714,13 @@ int main(void){
     Node *posTail = NULL;
    
     char command[LENGTH] = {'\0'};
-    char cStr[12] = {'\0'};
     Card c;
     c.value = 0;
     c.suit = "a";
-    Card cardTable[12] = {c};
     Card deck[DECKSIZE] = {c};
-    Card playerHand[12] = {c};
-    Card opHand[12] = {c};
     int place = 0;
     int i;
     int state = 0;
-    int cardPlace = 0;
     Node table;
     Score p1;
     Score p2;
@@ -759,7 +752,7 @@ int main(void){
 
 
     initializeDeck(deck);    
-    for (int i = 0; i <= HANDSIZE; i++){
+    for (i = 0; i <= HANDSIZE; i++){
         addCard(&tHead, &tTail, deck[place]);
         place = place+1;
     } 
@@ -838,6 +831,6 @@ int main(void){
     removeList(&tHead, &tTail);
     removeList(&posHead, &posTail);
 
-    
+    return 0;    
 
 }

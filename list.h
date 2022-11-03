@@ -19,7 +19,6 @@ typedef struct list {
 }List;
 
 
-void createList();
 void addCard(Node **head, Node **tail, Card c);
 void resetNums(Node **head);
 Card findCardInt(Node **head, Node **tail, int n);
