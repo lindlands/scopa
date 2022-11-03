@@ -23,13 +23,15 @@
 #define SWORDS 2
 #define CLUBS 3
 
+#define NUMSUITS 4
+
 /*-------------------structs-------------------*/
 
 typedef struct score {
     int numCards;
     int sevenCoins;
     int numCoins;
-    int primes[4]; /*see macros for suit order*/
+    int primes[NUMSUITS]; /*see macros for suit order*/
     int primeTotal;
     int scopa;
 
@@ -41,7 +43,7 @@ void initializeScore(Score *s){
     int i;
     s->numCards = 0;
     s->numCoins = 0;
-    for (int i = 0; i < 4; i++){
+    for (int i = 0; i < NUMSUITS; i++){
         s->primes[i] = 0;
     }
     s->scopa = 0;
@@ -64,7 +66,7 @@ void printScore(Score *s){
     printf("\n");
     Sleep(SLEEPL);
     printf("Prime: ");
-    for (int i = 0; i < 4; i++){
+    for (int i = 0; i < NUMSUITS; i++){
         prime += s->primes[i];
     }
     s->primeTotal = prime; //calculates primes for later
@@ -104,7 +106,7 @@ int findPrime(Score s){
     /* ∆ calculates the correct adjusted score based on Score's primes[] field. returns score. ∆ */
     int i;
     int total = 0;
-    for (int i = 0; i < 4; i++){
+    for (int i = 0; i < NUMSUITS; i++){
         if (s.primes[i] == 7){
             total += 21;
         }else if (s.primes[i] == 6){
@@ -748,7 +750,7 @@ int main(void){
 
 
     initializeDeck(deck);    
-    for (int i = 0; i < 4; i++){
+    for (int i = 0; i <= HANDSIZE; i++){
         addCard(&tHead, &tTail, deck[place]);
         place = place+1;
     } 
