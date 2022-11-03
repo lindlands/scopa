@@ -1,275 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <dos.h>
 #include <Windows.h>
 #include <ctype.h>
 
-#define LENGTH 64
+#include "command.h"
+#include "list.h"
+#include "macros.h"
+
 #define SUITL 10
 #define SLEEPL 350
-#define INPUTLEN 20
 
 #define P1TURN -1
 #define P2TURN 1
 #define HIDE -1
 #define DECKSIZE 40
+#define HANDSIZE 3
+
+#define CUPS 0
+#define COINS 1
+#define SWORDS 2
+#define CLUBS 3
 
 /*-------------------structs-------------------*/
-
-typedef struct card {
-    int value;
-    char *suit;
-}Card;
-
-typedef struct node {
-    Card data;
-    int order;
-    int flag;
-    struct node *next;
-}Node;
 
 typedef struct score {
     int numCards;
     int sevenCoins;
     int numCoins;
-    int primes[4]; /*Cards are sorted as follows: cups, coins, swords, clubs*/
+    int primes[4]; /*see macros for suit order*/
     int primeTotal;
     int scopa;
 
 }Score;
-
-typedef struct list {
-    Node* head;
-    Node* tail;
-    int size;
-}List;
-
-
-/*---------------------Linked list---------------------*/
-
-void createList(){
-    Card c;
-    List* list = (List*)malloc(sizeof(List));
-}
-
-void addCard(Node **head, Node **tail, Card c){
-    /* ∆ Adds specified card to the end of llist. ∆ */
-    Node* temp = (Node*)malloc(sizeof(Node));
-    temp->data = c;
-    temp->next = 0;
-    temp->flag = 0;
-    if ((*head) == NULL){
-        (*head) = temp;
-        (*tail) = temp;
-        temp->order = 1;
-        
-    }else{
-        temp->order = (*tail)->order + 1;
-        (*tail)->next = temp;
-        (*tail) = temp;
-    }
-}
-
-void resetNums(Node **head){
-    /*Resets order value of nodes. Starts from 1*/
-    int counter = 1;
-    Node*temp = *head;
-    while (temp != NULL){
-        temp->order = counter;
-        counter++;
-        temp = temp->next;
-    }
-}
-
-Card findCardInt(Node **head, Node **tail, int n){
-    /* ∆ find any specified card ∆ */
-    Node *temp, *previous;
-    Card c;
-    c.value = 0;
-    c.suit = 0;
-    temp = *head;
-    while (temp != NULL){
-        if (temp->order == n){
-            return temp->data;
-        }
-        temp = temp->next;
-    }
-    return c;
-}
-
-int removeCard(Node **head, Node **tail, Card c){
-    /* ∆ Removes any specified card ∆ */
-    /* ◎ EDGECASES: end of list removed, any in middle, first removed */
-    Node *temp, *previous;
-    temp = *head;
-    previous = *head;
-    /*first node*/
-    if (temp->data.suit == c.suit && temp->data.value == c.value){
-        *head = (*head)->next;
-        free(temp);
-        resetNums(head);
-        return 0;
-    }
-    /*not first node, loop through*/
-    temp = temp->next;
-    while (temp != NULL){
-        if (temp->data.suit == c.suit && temp->data.value == c.value){
-            if (temp->next == NULL){
-                *tail = previous;
-            }
-            previous->next = temp->next;
-            free(temp);
-            resetNums(head);
-            return 0;
-        }
-        previous = temp;
-        temp = temp->next;
-    }
-    return 1;
-}
-
-Card removeCardInt(Node **head, Node **tail, int n){
-    /* ∆ Removes any specified card ∆ */
-    /* ◎ EDGECASES: end of list removed, any in middle, first removed */
-    Node *temp, *previous;
-    Card c;
-    temp = *head;
-    previous = *head;
-    /*first node*/
-     if (temp->order == n){
-        if ((*head) == (*tail)){
-            *head = (*head)->next;
-            c = temp->data;
-            free(temp);
-            *tail = NULL;
-            *head = NULL;
-        }else{
-            *head = (*head)->next;
-            c = temp->data;
-            free(temp);
-            resetNums(head);
-        }
-        return c;
-    }
-    /*not first node, loop through*/
-    temp = temp->next;
-    while (temp != NULL){
-        if (temp->order == n){
-            if (temp->next == NULL){
-                *tail = previous;
-            }
-            previous->next = temp->next;
-            c = temp->data;
-            free(temp);
-            resetNums(head);
-            return c;
-        }
-        previous = temp;
-        temp = temp->next;
-    }
-    return c;
-}
-
-void removeList(Node **head, Node **tail){
-    while ((*head) != NULL){
-        removeCardInt(head, tail, 1);
-    }
-}
-
-/*WIP mergesort function for list of cards*/
-
-// void merge(Node *rHead, Node *rTail, Node *lHead, Node *lTail){ //WIP●
-//     Node *rPoint, *lPoint;
-//     Node *head = NULL;
-//     Node *tail = NULL;
-//     rPoint = rHead;
-//     lPoint = lHead;
-//     while (rPoint != NULL && lPoint != NULL){
-//         if (rPoint <= lPoint){
-//             addCard(&head, &tail, rPoint->data);
-//             rPoint = rPoint->next;
-//         }else{
-//             addCard(&head, &tail, lPoint->data);
-//             lPoint = lPoint->next;
-//         }
-//     }
-//     while (rPoint != NULL){
-//         addCard(&head, &tail, rPoint->data);
-//         rPoint = rPoint->next;
-//     }
-//     while (lPoint != NULL){
-//         addCard(&head, &tail, lPoint->data);
-//         lPoint = lPoint->next;
-//     }
-    
-// }
-
-// void mergeSort(Node *head, Node *tail, Node**mergeHead, Node**mergeTail){ //WIP●
-//     Node *newTail;
-//     Node *newHead;
-//     Node *filler;
-//     int i;
-//     int place = 0;
-//     if (head->next == NULL){
-//         return;
-//     }
-//     place = (tail->order - head->order + 1)/2;
-//     filler = head;
-//     for (int i = 0; i <= place; i++){
-//         if (i == place){
-//             newHead = filler;
-//         }else{
-//             if (i == place - 1){
-//                 newTail = filler;
-//                 filler = filler->next;
-//                 newTail->next = NULL;
-//             }else{
-//                 filler = filler->next;
-//             }
-            
-//         }
-//     }
-//     mergeSort(head, newTail, mergeHead, mergeTail);
-//     mergeSort(newHead, tail, mergeHead, mergeTail);
-
-//     return merge(head, newTail, newHead, tail);
-
-
-// }
-
-void flagForDeletion(Node **head, int nums[INPUTLEN]){
-    /*changes all nodes' flag values to -1 if their order values are in nums[]*/
-    Node *filler = *head;
-    int i = 0;
-    while(filler != NULL){
-        while(i <= INPUTLEN && nums[i] != 0){
-            if(nums[i] == filler->order){
-                filler->flag = -1;
-                break;
-            }
-            i++;
-        }
-        filler = filler->next;
-        i = 0;
-    }
-}
-
-void deleteFlags(Node **head, Node **tail){
-    /*removes all nodes in linked list that have a flag value of -1*/
-    Node *filler = (*head);
-    Card c;
-    while (filler != NULL){
-        if (filler->flag == -1){
-            c = filler->data;
-            filler = filler->next;
-            removeCard(head, tail, c);
-        }else{
-            filler = filler->next;
-        }
-    }
-}
 
 /*-----------------Score funtions-----------------*/
 
@@ -311,8 +75,6 @@ void printScore(Score *s){
         printf("You captured the 7 of Coins.\n");
     }
 
-
-    
 }
 
 int findPrimeVal(int i){
@@ -332,7 +94,8 @@ int findPrimeVal(int i){
         return 13;
     }else if (i == 2){
         return 12;
-    }else{ /*face cards*/
+    }else{ 
+        /*face cards*/
         return 10;
     }
 }
@@ -369,24 +132,24 @@ void scoreCard(Score *score, Card c){
     score->numCards++;
     prime = findPrimeVal(c.value);
     if (c.suit == " of Cups"){
-        if (score->primes[0] < prime){
-            score->primes[0] = prime;
+        if (score->primes[CUPS] < prime){
+            score->primes[CUPS] = prime;
         }
     }else if (c.suit == " of Coins"){
         if (c.value == 7){ //7 of coins!
             score->sevenCoins = 1;
         }
-        if (score->primes[1] < prime){
-            score->primes[1] = prime;
+        if (score->primes[COINS] < prime){
+            score->primes[COINS] = prime;
         }
         score->numCoins++;
     }else if (c.suit == " of Swords"){
-        if (score->primes[2] < prime){
-            score->primes[2] = prime;
+        if (score->primes[SWORDS] < prime){
+            score->primes[SWORDS] = prime;
         }
     }else if (c.suit == " of Clubs"){
-        if (score->primes[3] < prime){
-            score->primes[3] = prime;
+        if (score->primes[CLUBS] < prime){
+            score->primes[CLUBS] = prime;
         }
     }
 }
@@ -419,6 +182,7 @@ void printCards(Node *head){
             temp = (*temp).next;
             place++;
             if (place == 3){
+                /*to make formatting better*/
                 printf("\n                            ");
                 place = 0;
             }
@@ -584,77 +348,6 @@ int checkCards(int val, int nums[INPUTLEN], Node **head, Node **tail){
 // }
 
 
-
-/*------------------Command functions------------------*/
-
-void toLower(char* str){
-    /*converts string to lowercase*/
-    int i;
-    int j = strlen(str);
-    for(int i = 0; i < j; i++){
-        if (str[i] == '\000'){
-            break;
-        }
-        str[i] = tolower(str[i]);
-    }
-}
-
-int getCommand(char *arr){
-    fgets(arr, LENGTH, stdin);
-    toLower(arr);
-    printf("\n");
-}
-
-int compCom(char *input, char *match){
-    /*compares two strings to see if they match*/
-    int result;
-    int len;
-    //toLower(match);
-    len = strlen(match);
-    if(strlen(input) < len){
-        return 1;
-    }
-    result = strncmp(input,match,len);
-    if(result == 0){
-        if ( !result && input[len] && (input[len] != '\n' || input[len+1]) ){
-            return -1;
-        }
-        return result;
-    }
-}
-
-int convertToNum(char* command){
-    /* takes in string and returns int if possible. else, returns -1. */
-    int i;
-    for (int i = 0; i < strlen(command) - 1; i++){
-        if(!isdigit(command[i])){
-            return -1;
-        }
-    }
-    return atoi(command);
-}
-
-void parseCommand(char *str, int nums[INPUTLEN]){
-    /*takes in string and fills in array with numbers from string*/
-    int j = 0;
-    int i;
-    for (int i = 0; i < strlen(str); i++){
-        if (str[i] != ' ' && str[i] != '\n'){
-            if (str[i] == 1 && str[i + 1] == 0){
-                nums[j] = 10;
-                j++;
-                i++;
-            }else{
-                nums[j] = str[i] - 48;
-                j++;
-            }
-        }
-    }
-    
-}
-
-
-
 /*-----------------Game initialization-----------------*/
 
 void printPicture(char str[]){
@@ -726,7 +419,7 @@ void dealCards(Card* deck, Node**head1, Node**Tail1, Node**head2, Node**Tail2, i
     /*adds three cards to both players' hands*/
     int i = 0;
     Card c;
-    for (int i = 0; i < 3; i++){
+    for (int i = 0; i < HANDSIZE; i++){
         if (*place >= 39){
             break;
         }
@@ -1019,12 +712,6 @@ int main(void){
     int turn = P1TURN;
     int p1Total = 0;
     int p2Total = 0;
-
-    char *str1 = "uhhfruit";
-    char *str2 = "fruit";
-
-    i = strcmp(str2, &str1[3]);
-    i = strcmp(str2, &str1[2]);
 
     initializeScore(&p1);
     initializeScore(&p2);
