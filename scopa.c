@@ -609,6 +609,12 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
 
         
     }else if (compCom(command, "capture card") == 0){
+        if (*tHead == NULL){
+            printf("There are no cards to capture.\n");
+            Sleep(SLEEPL*2);
+            displayCards(*pHead, opTail, *tHead, turn);
+            goto commandEnter;
+        }
         printf("Which card from your hand do you want to play? Type position in hand (i.e. 1, 2, 3).\n"); //put this bit in a function
         getCommand(command);
         cardPlace = convertToNum(command);
@@ -661,7 +667,8 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
             removeCardInt(pHead, pTail, cardPlace);
 
             if ((*tHead) == NULL){
-            printf("SCOPA!\n");
+            system("cls");
+            printf("\n\n----SCOPA!----\n");
             p1->scopa++;
             Sleep(SLEEPL*2);      
         }
