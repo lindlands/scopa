@@ -4,6 +4,7 @@
 #include <dos.h>
 #include <Windows.h>
 #include <ctype.h>
+#include <time.h>
 
 #include "command.h"
 #include "list.h"
@@ -401,6 +402,7 @@ void initializeDeck(Card* deck){
     }
     counter = 0;
     for (int i = 0; i < DECKSIZE; i++){
+        srand(time(NULL));
         while (found == 1){ /*can just create array of indexes*/
             num = (rand() %(DECKSIZE));
             if (deck[num].value == 0){
