@@ -162,6 +162,16 @@ void scoreDeck(Score *s, Node *head){
     }
 }
 
+void addScore(int p1Field, int p2Field, int *p1, int *p2){
+    /*adds point to winning player's total*/
+    if (p1Field > p2Field){
+        (*p1)++;
+    }else if (p1Field < p2Field){
+        (*p2)++;
+    }
+
+}
+
 
 /*-----------------Card funtions-----------------*/
 
@@ -171,7 +181,7 @@ void printCards(Node *head){
     Node* temp = head;
     int place = 0;
     if (head == NULL){
-        printf("You have no cards.\n");
+        printf("There are no cards.\n");
     }else{
         while(temp->next != NULL){
             printf("[");
@@ -648,9 +658,10 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
             deleteFlags(tHead, tTail);
             removeCardInt(pHead, pTail, cardPlace);
 
-            if (tHead == NULL){
+            if ((*tHead) == NULL){
             printf("SCOPA!\n");
-            p1->scopa++;            
+            p1->scopa++;
+            Sleep(SLEEPL*2);      
         }
 
         }else{
@@ -786,31 +797,11 @@ int main(void){
     Sleep(SLEEPL*2);
     printf("\n");
 
-    if (p1.numCards > p2.numCards){
-        p1Total++;
-    }else if (p1.numCards < p2.numCards){
-        p2Total++;
-    }
-    if (p1.numCoins > p2.numCoins){
-        p1Total++;
-    }else if (p2.numCards > p1.numCards){
-        p2Total++;
-    }
-    if (p1.scopa > p2.scopa){
-        p1Total++;
-    }else if (p2.scopa > p1.scopa){
-        p2Total++;
-    }
-    if (p1.sevenCoins > p2.sevenCoins){
-        p1Total++;
-    }else if (p2.sevenCoins > p1.sevenCoins){
-        p2Total++;
-    }
-    if (p1.primeTotal > p2.primeTotal){
-        p1Total++;
-    }else if (p2.primeTotal > p1.primeTotal){
-        p2Total++;
-    }
+    addScore(p1.numCards, p2.numCards, &p1Total, &p2Total);
+    addScore(p1.numCoins, p2.numCoins, &p1Total, &p2Total);
+    addScore(p1.scopa, p2.scopa, &p1Total, &p2Total);
+    addScore(p1.sevenCoins, p2.sevenCoins, &p1Total, &p2Total);
+    addScore(p1.primeTotal, p2.primeTotal, &p1Total, &p2Total);
 
     printf("PLAYER 1 total: ");
     printf("%d", p1Total);
