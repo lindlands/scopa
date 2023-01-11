@@ -373,18 +373,19 @@ void checkPlayable(Card c, Node* tHead, Node* tTail, Node** matchH, Node** match
     focus = tHead;
     while (focus != NULL && focus->data.value > sum){ 
         /* removes all greater-than cards */
-        i = focus->order;
+        focus->flag = FLAG_HIDE;
         focus = focus->next;
-        removeCardInt(&tHead, &tTail, i);  
     }
 
     while (focus != NULL){
         /*focus til end of the list*/
-        if ((sum - focus->data.value) == 0){
-            addCard(matchH, matchT, focus->data);
-        }
-        if ((sum - focus->data.value) > 0){
-            checkPlayable(focus->data, focus->next, tTail, matchH, matchT);
+        if (focus->flag != FLAG_HIDE){
+            if ((sum - focus->data.value) == 0){
+                addCard(matchH, matchT, focus->data);
+            }
+            if ((sum - focus->data.value) > 0){
+                checkPlayable(focus->data, focus->next, tTail, matchH, matchT);
+            }
         }
         focus = focus->next;
     }
@@ -632,6 +633,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
             posTail = NULL;
             c = findCardInt(pHead, pTail, cardPlace);
             checkPlayable(c, *tHead, *tTail, &posHead, &posTail);
+            resetFlags(tHead);
             if (posHead != NULL){
                 printf("A card can only be placed on the table when there are no cards to capture.\n");
                 Sleep(SLEEPL*4);
