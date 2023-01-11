@@ -15,7 +15,6 @@
 
 #define P1TURN -1
 #define P2TURN 1
-#define HIDE -1
 #define DECKSIZE 40
 #define HANDSIZE 3
 
@@ -383,11 +382,7 @@ void checkPlayable(Card c, Node* tHead, Node* tTail, Node** matchH, Node** match
         /*focus til end of the list*/
         if ((sum - focus->data.value) == 0){
             addCard(matchH, matchT, focus->data);
-            // focus = focus->next;
         }
-        // if ((sum - focus->data.value) < 0){
-        //     focus = focus->next;
-        // }
         if ((sum - focus->data.value) > 0){
             checkPlayable(focus->data, focus->next, tTail, matchH, matchT);
         }
@@ -612,8 +607,8 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
     /*the player's turn: displays options and carries out specified action*/
     char cStr[12] = {'\0'};
     int cardPlace = 0;
-    Node *posHead = NULL;
-    Node *posTail = NULL;
+    Node *posHead;
+    Node *posTail;
     Node *filler = NULL;
     char command[LENGTH];
     int inputNums[INPUTLEN] = {0};
@@ -633,6 +628,8 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         cardPlace = convertToNum(command);
         if (cardPlace > 0  && cardPlace <= (*pTail)->order){
             //checkPlayable
+            posHead = NULL;
+            posTail = NULL;
             c = findCardInt(pHead, pTail, cardPlace);
             checkPlayable(c, *tHead, *tTail, &posHead, &posTail);
             if (posHead != NULL){

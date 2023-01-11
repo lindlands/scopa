@@ -4,13 +4,16 @@
 #include "list.h"
 #include "macros.h"
 
+#define FLAG_DELETE -1
+#define FLAG_NONE 0
+
 
 void addCard(Node **head, Node **tail, Card c){
     /* ∆ Adds specified card to the end of llist. ∆ */
     Node* temp = (Node*)malloc(sizeof(Node));
     temp->data = c;
     temp->next = 0;
-    temp->flag = 0;
+    temp->flag = FLAG_NONE;
     if ((*head) == NULL){
         (*head) = temp;
         (*tail) = temp;
@@ -172,13 +175,13 @@ void insertionSort(Node **head, Node **tail){
 
 
 void flagForDeletion(Node **head, int nums[INPUTLEN]){
-    /*changes all nodes' flag values to -1 if their order values are in nums[]*/
+    /*changes all nodes' flag values to FLAG_DELETE if their order values are in nums[]*/
     Node *filler = *head;
     int i = 0;
     while(filler != NULL){
         while(i <= INPUTLEN && nums[i] != 0){
             if(nums[i] == filler->order){
-                filler->flag = -1;
+                filler->flag = FLAG_DELETE;
                 break;
             }
             i++;
@@ -193,7 +196,7 @@ void deleteFlags(Node **head, Node **tail){
     Node *filler = (*head);
     Card c;
     while (filler != NULL){
-        if (filler->flag == -1){
+        if (filler->flag == FLAG_DELETE){
             c = filler->data;
             filler = filler->next;
             removeCard(head, tail, c);
