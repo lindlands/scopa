@@ -19,8 +19,9 @@
 #define DECKSIZE 40
 #define HANDSIZE 3
 
-#define CUPS 0
-#define COINS 1
+
+#define COINS 0
+#define CUPS 1
 #define SWORDS 2
 #define CLUBS 3
 
@@ -584,7 +585,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         Sleep(SLEEPL*2);
         return;
     }
-    printf("What would you like to do? [ capture card | place card | check deck | help ]\n");
+    printf("What would you like to do? [ capture card | place card | sort cards | check deck | help ]\n");
     getCommand(command);
     if(compCom(command, "place card") == 0){
         printf("Which card? Type either card or position in hand (i.e. 1, 2, 3)\n");
@@ -681,7 +682,10 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         }   
 
 
-
+    }else if ((compCom(command, "sort cards") == 0)){
+        insertionSort(pHead, pTail);
+        displayCards(*pHead, opTail, *tHead, turn);
+        goto commandEnter;
     }else if ((compCom(command, "check deck") == 0)){
         deckSize(cardPlace);
         Sleep(SLEEPL*2);
