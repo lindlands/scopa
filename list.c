@@ -4,9 +4,6 @@
 #include "list.h"
 #include "macros.h"
 
-#define FLAG_DELETE -1
-#define FLAG_NONE 0
-
 
 void addCard(Node **head, Node **tail, Card c){
     /* ∆ Adds specified card to the end of llist. ∆ */
@@ -33,6 +30,15 @@ void resetNums(Node **head){
     while (temp != NULL){
         temp->order = counter;
         counter++;
+        temp = temp->next;
+    }
+}
+
+void resetFlags(Node **head){
+    /*Resets the flag value of nodes to FLAG_NONE*/
+    Node *temp = *head;
+    while (temp != NULL){
+        temp->flag = FLAG_NONE;
         temp = temp->next;
     }
 }
