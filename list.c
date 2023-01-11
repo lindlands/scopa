@@ -129,66 +129,50 @@ void removeList(Node **head, Node **tail){
     }
 }
 
-/*WIP mergesort function for list of cards*/
+int compareCard(Card c1, Card c2){
+    /*returns 1 if first card is greater, 0 if second*/
+    if (c1.value > c2.value){
+        return 1;
+    }
+    if (c1.value < c2.value){
+        return 0;
+    }
+    /*compare suits if tie*/
+    if (c1.suit < c2.suit){
+        return 0;
+    }else{
+        return 1;
+    }
+}
 
-// void merge(Node *rHead, Node *rTail, Node *lHead, Node *lTail){ //WIP●
-//     Node *rPoint, *lPoint;
-//     Node *head = NULL;
-//     Node *tail = NULL;
-//     rPoint = rHead;
-//     lPoint = lHead;
-//     while (rPoint != NULL && lPoint != NULL){
-//         if (rPoint <= lPoint){
-//             addCard(&head, &tail, rPoint->data);
-//             rPoint = rPoint->next;
-//         }else{
-//             addCard(&head, &tail, lPoint->data);
-//             lPoint = lPoint->next;
-//         }
-//     }
-//     while (rPoint != NULL){
-//         addCard(&head, &tail, rPoint->data);
-//         rPoint = rPoint->next;
-//     }
-//     while (lPoint != NULL){
-//         addCard(&head, &tail, lPoint->data);
-//         lPoint = lPoint->next;
-//     }
-    
-// }
+void insertionSort(Node **head, Node **tail){
+    Node *filler = *head;
+	Node *prev = *head;
+    while(filler != NULL){
+        Node *start = *head;
+		Node *sprev = NULL;
+        while (start != filler){
+            if (compareCard(filler->data, start->data)){
+				/*card goes here*/
+				prev->next = filler->next;
+				filler->next = start;
+				if (sprev != NULL){
+					sprev->next = filler;
+				}else{
+					*head = filler;
+				}
+				break;
+            }else{
+				sprev = start;
+                start = start->next;
+            }
+        }
+		prev = filler;
+		filler = filler->next;
+    }
+	resetNums(head);
+}
 
-// void mergeSort(Node *head, Node *tail, Node**mergeHead, Node**mergeTail){ //WIP●
-//     Node *newTail;
-//     Node *newHead;
-//     Node *filler;
-//     int i;
-//     int place = 0;
-//     if (head->next == NULL){
-//         return;
-//     }
-//     place = (tail->order - head->order + 1)/2;
-//     filler = head;
-//     for (i = 0; i <= place; i++){
-//         if (i == place){
-//             newHead = filler;
-//         }else{
-//             if (i == place - 1){
-//                 newTail = filler;
-//                 filler = filler->next;
-//                 newTail->next = NULL;
-//             }else{
-//                 filler = filler->next;
-//             }
-            
-//         }
-//     }
-//     mergeSort(head, newTail, mergeHead, mergeTail);
-//     mergeSort(newHead, tail, mergeHead, mergeTail);
-
-//     return merge(head, newTail, newHead, tail);
-
-
-// }
 
 void flagForDeletion(Node **head, int nums[INPUTLEN]){
     /*changes all nodes' flag values to -1 if their order values are in nums[]*/
