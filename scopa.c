@@ -39,7 +39,7 @@ typedef struct score {
 
 }Score;
 
-/*-----------------Score funtions-----------------*/
+/*-----------------Score functions-----------------*/
 
 void initializeScore(Score *s){
     int i;
@@ -177,7 +177,7 @@ void addScore(int p1Field, int p2Field, int *p1, int *p2){
 }
 
 
-/*-----------------Card funtions-----------------*/
+/*-----------------Card functions-----------------*/
 
 
 void printCards(Node *head){
@@ -361,6 +361,45 @@ int checkCards(int val, int nums[INPUTLEN], Node **head, Node **tail){
 // }
 
 
+void checkPlayable(Card c, Node* tHead, Node* tTail, Node** matchH, Node** matchT){
+    /*returns list of combinations*/
+    /*NOTE: could change 'Card c' argument to just an int.....?*/
+    int sum;
+    Node* focus;
+    Node *subFocus;
+    int i;
+    int j;
+    sum = c.value;
+    insertionSort(&tHead, &tTail); /*sort cards, for fun*/
+    focus = tHead;
+    while (focus != NULL && focus->data.value > sum){ 
+        /* removes all greater-than cards */
+        i = focus->order;
+        focus = focus->next;
+        removeCardInt(&tHead, &tTail, i);  
+    }
+
+    while (focus != NULL){
+        /*focus til end of the list*/
+        if ((sum - focus->data.value) == 0){
+            addCard(matchH, matchT, focus->data);
+            // focus = focus->next;
+        }
+        // if ((sum - focus->data.value) < 0){
+        //     focus = focus->next;
+        // }
+        if ((sum - focus->data.value) > 0){
+            checkPlayable(focus->data, focus->next, tTail, matchH, matchT);
+        }
+        focus = focus->next;
+    }
+
+
+
+    
+}
+
+
 /*-----------------Game initialization-----------------*/
 
 void printPicture(char str[]){
@@ -402,7 +441,8 @@ void initializeDeck(Card* deck){
     }
     counter = 0;
     for (i = 0; i < DECKSIZE; i++){
-        srand(time(NULL));
+        //srand(time(NULL)); !!!!!!! switch back
+        srand(1);
         while (found == 1){ /*can just create array of indexes*/
             num = (rand() %(DECKSIZE));
             if (deck[num].value == 0){
@@ -593,9 +633,12 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         cardPlace = convertToNum(command);
         if (cardPlace > 0  && cardPlace <= (*pTail)->order){
             //checkPlayable
+            c = findCardInt(pHead, pTail, cardPlace);
+            checkPlayable(c, *tHead, *tTail, &posHead, &posTail);
             if (posHead != NULL){
                 printf("A card can only be placed on the table when there are no cards to capture.\n");
-                Sleep(SLEEPL*2);
+                Sleep(SLEEPL*4);
+                goto commandEnter;
 
             }else{
                 c = removeCardInt(pHead, pTail, cardPlace);
