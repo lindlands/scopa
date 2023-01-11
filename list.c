@@ -149,6 +149,9 @@ void insertionSort(Node **head, Node **tail){
             if (compareCard(filler->data, start->data)){
 				/*card goes here*/
 				prev->next = filler->next;
+				if (filler->next == NULL){
+					*tail = prev;
+				}
 				filler->next = start;
 				if (sprev != NULL){
 					sprev->next = filler;
