@@ -133,16 +133,10 @@ int compareCard(Card c1, Card c2){
     /*returns 1 if first card is greater, 0 if second*/
     if (c1.value > c2.value){
         return 1;
-    }
-    if (c1.value < c2.value){
-        return 0;
-    }
-    /*compare suits if tie*/
-    if (c1.suit < c2.suit){
-        return 0;
     }else{
-        return 1;
-    }
+		/*suit doesn't matter*/
+		return 0;
+	}
 }
 
 void insertionSort(Node **head, Node **tail){
