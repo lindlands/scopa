@@ -53,21 +53,22 @@ int convertToNum(char* command){
     return atoi(command);
 }
 
-void parseCommand(char *str, int nums[INPUTLEN]){
+int parseCommand(char *str, int nums[INPUTLEN]){
     /*takes in string and fills in array with numbers from string*/
     int j = 0;
     int i;
     for (i = 0; i < strlen(str); i++){
-        if (str[i] != ' ' && str[i] != '\n'){
-            if (str[i] == 1 && str[i + 1] == 0){
-                nums[j] = 10;
-                j++;
-                i++;
-            }else{
+        if (isdigit(str[i])){
+            if (nums[j] == 0){
                 nums[j] = str[i] - 48;
-                j++;
+            }else{
+                nums[j] = nums[j] * 10 + (str[i] - 48);
             }
+        }else if(str[i] == ' '){
+            j++;
+        }else if (str[i] != '\n'){
+            return 0;
         }
     }
-    
+    return 1;
 }

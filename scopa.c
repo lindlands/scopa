@@ -316,7 +316,8 @@ void initializeDeck(Card* deck){
     }
     counter = 0;
     for (i = 0; i < DECKSIZE; i++){
-        srand(time(NULL));
+        //srand(time(NULL));
+        srand(4);
         while (found == 1){
             num = (rand() %(DECKSIZE));
             if (deck[num].value == 0){
@@ -576,9 +577,8 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
 
         printf("Which cards on the table? Type position on table separated by a space (e.g. 3 1 5).\n");
         getCommand(command);
-        parseCommand(command, inputNums);
-        if (checkCards(c.value, inputNums, tHead, tTail) == 1){
-            for (i = 0; i < 10; i++){
+        if (parseCommand(command, inputNums) && checkCards(c.value, inputNums, tHead, tTail) == 1){
+            for (i = 0; i < 10; i++){ //?
                 if(inputNums[i] == 0){
                     break;
                 }
