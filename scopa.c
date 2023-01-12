@@ -18,7 +18,6 @@
 #define DECKSIZE 40
 #define HANDSIZE 3
 
-
 #define COINS 0
 #define CUPS 1
 #define SWORDS 2
@@ -35,12 +34,12 @@ typedef struct score {
     int primes[NUMSUITS]; /*see macros for suit order*/
     int primeTotal;
     int scopa;
-
 }Score;
 
 /*-----------------Score functions-----------------*/
 
 void initializeScore(Score *s){
+    /*initalizes all values of a Score to 0*/
     int i;
     s->numCards = 0;
     s->numCoins = 0;
@@ -52,6 +51,7 @@ void initializeScore(Score *s){
 }
 
 void printScore(Score *s){
+    /*prints a players score*/
     int prime = 0;
     int i;
     printf("Number of cards captured: ");
@@ -70,7 +70,7 @@ void printScore(Score *s){
     for (i = 0; i < NUMSUITS; i++){
         prime += s->primes[i];
     }
-    s->primeTotal = prime; //calculates primes for later
+    s->primeTotal = prime; /*calculates primes for later*/
     printf("%d", prime);
     printf("\n");
     Sleep(SLEEPL);
@@ -82,7 +82,6 @@ void printScore(Score *s){
 
 int findPrimeVal(int i){
     /* ∆ calculates the correct adjusted prime value of one number. ∆ */
-    
     if (i == 7){
         return 21;
     }else if (i == 6){
@@ -122,7 +121,8 @@ int findPrime(Score s){
             total += 13;
         }else if (s.primes[i] == 2){
             total += 12;
-        }else{ /*face cards*/
+        }else{ 
+            /*face cards*/
             total += 10;
         }
     }
@@ -139,7 +139,7 @@ void scoreCard(Score *score, Card c){
             score->primes[CUPS] = prime;
         }
     }else if (c.suit == " of Coins"){
-        if (c.value == 7){ //7 of coins!
+        if (c.value == 7){ 
             score->sevenCoins = 1;
         }
         if (score->primes[COINS] < prime){
@@ -195,7 +195,7 @@ void printCards(Node *head){
             temp = (*temp).next;
             place++;
             if (place == 3){
-                /*to make formatting better*/
+                /*to make format*/
                 printf("\n                            ");
                 place = 0;
             }
@@ -316,9 +316,8 @@ void initializeDeck(Card* deck){
     }
     counter = 0;
     for (i = 0; i < DECKSIZE; i++){
-        //srand(time(NULL)); !!!!!!! switch back
-        srand(4);
-        while (found == 1){ /*can just create array of indexes*/
+        srand(time(NULL));
+        while (found == 1){
             num = (rand() %(DECKSIZE));
             if (deck[num].value == 0){
                 deck[num].value = pile[i].value;
@@ -403,7 +402,7 @@ void playerBuffer(){
 }
 
 void dealText(){
-    /*'amimation' for dealing cards*/
+    /*'animation' for dealing cards*/
     int i;
     for (i = 0; i < 3; i++){
         printf("/ ");
@@ -547,7 +546,8 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
             goto commandEnter;
         }
         c = findCardInt(pHead, pTail, cardPlace);
-        if (c.value == 0){ //shouldn't happen
+        if (c.value == 0){ 
+            /*shouldn't happen*/
             printf("There was an error.");
             Sleep(SLEEPL*2);
             goto commandEnter;
@@ -583,7 +583,6 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
                     break;
                 }
                 scoreCard(p1, findCardInt(tHead, tTail, inputNums[i]));
-                //removeCardInt(tHead, tTail, inputNums[i]);
             }
             flagForDeletion(tHead, inputNums);
             deleteFlags(tHead, tTail);
@@ -628,7 +627,6 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
 
 
 int main(void){
-
     /* -- LISTS -- */
     Node *p1Head = NULL;
     Node *p1Tail = NULL;
@@ -657,7 +655,7 @@ int main(void){
     initializeScore(&p1);
     initializeScore(&p2);
 
-    //printPicture(".txt");
+    /*printPicture(".txt");*/ /*optional/unused to print header text from file*/
     printf("\n-----------------SCOPA-----------------\n");
     printf("Welcome!\n");
     beginning:
@@ -675,8 +673,6 @@ int main(void){
     system("cls");
     printf("\n---------------------------------------\n");
 
-
-
     initializeDeck(deck);    
     for (i = 0; i <= HANDSIZE; i++){
         addCard(&tHead, &tTail, deck[place]);
@@ -687,7 +683,8 @@ int main(void){
         
         if(p1Head == NULL && p2Head == NULL){
             dealCards(deck, &p1Head, &p1Tail, &p2Head, &p2Tail, &place);
-            if (p1Head == NULL && p2Head == NULL){ //no more cards
+            if (p1Head == NULL && p2Head == NULL){ 
+                /*no more cards*/
                 if (turn == P1TURN){
                     scoreDeck(&p2, tHead);
                 }else{
@@ -750,7 +747,6 @@ int main(void){
     }
     printf("\n\n");
     buffer("Press ENTER to exit.");
-
 
     removeList(&p1Head, &p1Tail);
     removeList(&p2Head, &p2Tail);
