@@ -27,3 +27,4 @@ void removeList(Node **head, Node **tail);
 void flagForDeletion(Node **head, int nums[INPUTLEN]);
 void deleteFlags(Node **head, Node **tail);
 void insertionSort(Node **head, Node **tail);
+void resetFlags(Node **head);
