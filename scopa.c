@@ -369,14 +369,15 @@ void checkPlayable(Card c, Node* tHead, Node* tTail, Node** matchH, Node** match
     int i;
     int j;
     sum = c.value;
-    insertionSort(&tHead, &tTail); /*sort cards, for fun*/
     focus = tHead;
-    while (focus != NULL && focus->data.value > sum){ 
+    while (focus != NULL){ 
         /* removes all greater-than cards */
-        focus->flag = FLAG_HIDE;
-        focus = focus->next;
+        if (focus->data.value > sum){
+            focus->flag = FLAG_HIDE;
+            focus = focus->next;
+        }
     }
-
+    focus = tHead;
     while (focus != NULL){
         /*focus til end of the list*/
         if (focus->flag != FLAG_HIDE){
@@ -438,7 +439,7 @@ void initializeDeck(Card* deck){
     counter = 0;
     for (i = 0; i < DECKSIZE; i++){
         //srand(time(NULL)); !!!!!!! switch back
-        srand(1);
+        srand(2);
         while (found == 1){ /*can just create array of indexes*/
             num = (rand() %(DECKSIZE));
             if (deck[num].value == 0){
