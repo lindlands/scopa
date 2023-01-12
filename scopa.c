@@ -495,6 +495,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
     int i;
     Card c;
     commandEnter:
+    displayCards(*pHead, opTail, *tHead, turn);
     if (*pHead == NULL){
         printf("You have no more cards.");
         Sleep(SLEEPL*2);
@@ -516,7 +517,6 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
             if (posHead != NULL){
                 printf("A card can only be placed on the table when there are no cards to capture.\n");
                 Sleep(SLEEPL*4);
-                displayCards(*pHead, opTail, *tHead, turn);
                 goto commandEnter;
 
             }else{
@@ -535,7 +535,6 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         if (*tHead == NULL){
             printf("There are no cards to capture.\n");
             Sleep(SLEEPL*2);
-            displayCards(*pHead, opTail, *tHead, turn);
             goto commandEnter;
         }
         printf("Which card from your hand do you want to play? Type position in hand (i.e. 1, 2, 3).\n"); //put this bit in a function
@@ -598,28 +597,23 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         }else{
             printf("Please enter a valid number or card.\n");
             Sleep(SLEEPL*2);
-            displayCards(*pHead, opTail, *tHead, turn);
             goto commandEnter;
         }   
 
 
     }else if ((compCom(command, "sort cards") == 0)){
         insertionSort(pHead, pTail);
-        displayCards(*pHead, opTail, *tHead, turn);
         goto commandEnter;
     }else if ((compCom(command, "check deck") == 0)){
         deckSize(place);
         Sleep(SLEEPL*2);
-        displayCards(*pHead, opTail, *tHead, turn);
         goto commandEnter;
     }else if ((compCom(command, "help") == 0)){
         helpText();
-        displayCards(*pHead, opTail, *tHead, turn);
         goto commandEnter;
     }else{
         printf("Please enter a valid command.\n");
         Sleep(SLEEPL*2);
-        displayCards(*pHead, opTail, *tHead, turn);
         goto commandEnter;
     }
 }
@@ -702,13 +696,11 @@ int main(void){
         if(turn == P1TURN){
             printf("\n----PLAYER 1----\n");
             playerBuffer();
-            displayCards(p1Head, p2Tail, tHead, turn);
             action(&p1, &p1Head, &p1Tail, p2Tail, &tHead, &tTail, turn, place);
             turn = P2TURN;
         }else{
             printf("\n----PLAYER 2----\n");
             playerBuffer();
-            displayCards(p2Head, p1Tail, tHead, turn);
             action(&p2, &p2Head, &p2Tail, p1Tail, &tHead, &tTail, turn, place);
             turn = P1TURN;
         }
