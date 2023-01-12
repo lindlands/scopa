@@ -482,7 +482,7 @@ void helpText(){
         }
 }
 
-void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail, int turn){
+void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail, int turn, int place){
     /*the player's turn: displays options and carries out specified action*/
     char cStr[12] = {'\0'};
     int cardPlace = 0;
@@ -608,7 +608,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         displayCards(*pHead, opTail, *tHead, turn);
         goto commandEnter;
     }else if ((compCom(command, "check deck") == 0)){
-        deckSize(cardPlace);
+        deckSize(place);
         Sleep(SLEEPL*2);
         displayCards(*pHead, opTail, *tHead, turn);
         goto commandEnter;
@@ -617,6 +617,9 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         displayCards(*pHead, opTail, *tHead, turn);
         goto commandEnter;
     }else{
+        printf("Please enter a valid command.\n");
+        Sleep(SLEEPL*2);
+        displayCards(*pHead, opTail, *tHead, turn);
         goto commandEnter;
     }
 }
@@ -700,13 +703,13 @@ int main(void){
             printf("\n----PLAYER 1----\n");
             playerBuffer();
             displayCards(p1Head, p2Tail, tHead, turn);
-            action(&p1, &p1Head, &p1Tail, p2Tail, &tHead, &tTail, turn);
+            action(&p1, &p1Head, &p1Tail, p2Tail, &tHead, &tTail, turn, place);
             turn = P2TURN;
         }else{
             printf("\n----PLAYER 2----\n");
             playerBuffer();
             displayCards(p2Head, p1Tail, tHead, turn);
-            action(&p2, &p2Head, &p2Tail, p1Tail, &tHead, &tTail, turn);
+            action(&p2, &p2Head, &p2Tail, p1Tail, &tHead, &tTail, turn, place);
             turn = P1TURN;
         }
 
