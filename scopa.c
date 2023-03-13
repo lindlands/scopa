@@ -426,7 +426,7 @@ void helpText(){
     printf("\n------------------RULES------------------\n");
     printf("Scopa is an Italian game, so it is played with a 40-card deck with cards valuing from 1 to 10. The suits are Cups, Coins, Swords, and Clubs.\n");
     printf("The goal of the game is to collect cards, so by the end of the game, scoring of your cards will grant you the most points.\n\n");
-    printf("[Press ENTER to proceed with GAMEPLAY rules or type \"EXIT\" to start playing.]\n");
+    printf("[Press ENTER to proceed with GAMEPLAY rules or type \"EXIT\".]\n");
     getCommand(command);
     if (compCom(command, "exit") == 0){
         return;
@@ -442,7 +442,7 @@ void helpText(){
     printf("After the card is played, both your card and the captured cards will be removed.\n");
     printf("When both the player and opponent run out of cards, then three cards are dealt to each.\n\n");
     printf("If you clear the board during the round [exculding the last card played of the last round], that is called a SCOPA, which will add a point to your score.\n\n");
-    printf("[Press ENTER to proceed with SCORING rules or type \"EXIT\" to start playing.]\n");
+    printf("[Press ENTER to proceed with SCORING rules or type \"EXIT\".]\n");
     getCommand(command);
     if (compCom(command, "exit") == 0){
         return;
@@ -459,9 +459,9 @@ void helpText(){
     printf("---  A Prime is the total of adding the \"best\" card in each suit. The ranking is as follows:\n");
     printf("---  [7]: 21pts. [6], 18pts. [1], 16pts. [5], 15pts. [4], 14pts. [3], 13pts. [2], 12 pts. [8/9/10], 10 pts.\n");
     printf("\nKeep this in mind when capturing cards!\n");
-    printf("\nAre you ready to play?\n");
+    printf("\nWould you like to review any rules?\n");
         getCommand(command);
-        if (compCom(command, "yes") == 0){
+        if (compCom(command, "no") == 0){
             printf("Okay, we'll get right into it. Good luck! \n\n");
         }else{
             help_loop:
@@ -644,6 +644,26 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
     }
 }
 
+void printMenu(){
+    /*prints starting menu sequence*/
+    char command[LENGTH] = {'\0'};
+    while(1){
+    printf("\n-----------------SCOPA-----------------\n");
+    printf("Welcome!\n");
+    printf("What would you like to do? [ start | rules | quit ]\n");
+    getCommand(command);
+    if (compCom(command, "start") == 0){
+        return;
+    }else if (compCom(command, "rules") == 0){
+        helpText();
+    }else if (compCom(command, "quit") == 0){
+        exit(0);
+    }else{
+        printf("Please enter a valid command.\n");
+    }
+    system("cls");
+    }
+}
 
 /*------------------------------------------------------*/
 
@@ -679,30 +699,7 @@ int main(void){
     initializeScore(&p2);
 
     /*printPicture(".txt");*/ /*optional/unused to print header text from file*/
-    printf("\n-----------------SCOPA-----------------\n");
-    printf("Welcome!\n");
-    beginning:
-    // printf("Would you like to play single player or two player?\n");
-    // getCommand(command);
-    // if (compCom(command, "single") == 0 || compCom(command, "single player") == 0){
-    //     Sleep(SLEEPL); 
-    // }else if (compCom(command, "no") == 0){
-    //     helpText();
-    // }else{
-    //     printf("Please enter either yes or no. ");
-    //     goto beginning;
-    // }
-    printf("Do you know how to play scopa?\n");
-    getCommand(command);
-    if (compCom(command, "yes") == 0){
-        printf("Okay, we'll get right into it. Good luck! \n\n");
-        Sleep(SLEEPL); 
-    }else if (compCom(command, "no") == 0){
-        helpText();
-    }else{
-        printf("Please enter either yes or no. ");
-        goto beginning;
-    }
+    printMenu();
     system("cls");
     printf("\n---------------------------------------\n");
 
