@@ -483,6 +483,87 @@ void helpText(){
         }
 }
 
+int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
+    char cStr[12] = {'\0'};
+    int cardPlace = 0;
+    Node *posHead;
+    Node *posTail;
+    Node *filler = NULL;
+    char command[LENGTH];
+    int inputNums[INPUTLEN] = {0};
+    int i;
+    Card c;
+    if (*tHead == NULL){
+            printf("There are no cards to capture.\n");
+            Sleep(SLEEPL*2);
+            return 0;
+        }
+        printf("Which card from your hand do you want to play? Type position in hand (i.e. 1, 2, 3).\n"); //put this bit in a function
+        getCommand(command);
+        cardPlace = convertToNum(command);
+        if (cardPlace <= 0  || cardPlace > (*pTail)->order){
+            printf("Please enter a valid number or card.\n");
+            Sleep(SLEEPL*2);
+            return 0;
+        }
+        c = findCardInt(pHead, pTail, cardPlace);
+        if (c.value == 0){ 
+            /*shouldn't happen*/
+            printf("There was an error.");
+            Sleep(SLEEPL*2);
+            return 0;
+        }
+
+        system("cls");
+        printf("\n---------------------------------------\n");
+        c = findCardInt(pHead, pTail, cardPlace);
+        cardToString(c, cStr);
+        printf("Your card: ");
+        printf("[");
+        printf(cStr);
+        printf("]\n\n");
+        filler = *tHead;
+        while (filler != NULL){
+            printf("-");
+            printf("%d", filler->order);
+            printf("- ");
+            cardToString(filler->data, cStr);
+            printf("[");
+            printf(cStr);
+            printf("]  \n");
+            filler = filler->next;
+        }
+        printf("\n");
+
+        printf("Which cards on the table? Type position on table separated by a space (e.g. 3 1 5).\n");
+        getCommand(command);
+        if (parseCommand(command, inputNums) && checkCards(c.value, inputNums, tHead, tTail) == 1){
+            for (i = 0; i < 10; i++){ 
+                if(inputNums[i] == 0){
+                    break;
+                }
+                scoreCard(pScore, findCardInt(tHead, tTail, inputNums[i]));
+            }
+            flagForDeletion(tHead, inputNums);
+            deleteFlags(tHead, tTail);
+            removeCardInt(pHead, pTail, cardPlace);
+
+            if ((*tHead) == NULL){
+            system("cls");
+            printf("\n\n----SCOPA!----\n");
+            pScore->scopa++;
+            Sleep(SLEEPL*2);     
+            return 1; 
+        }
+
+        }else{
+            printf("Please enter a valid number or card.\n");
+            Sleep(SLEEPL*2);
+            return 0;
+        }   
+
+}
+
 void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail, int turn, int place){
     /*the player's turn: displays options and carries out specified action*/
     char cStr[12] = {'\0'};
@@ -529,78 +610,11 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
             goto commandEnter;
             
         }
-
         
     }else if (compCom(command, "capture card") == 0){
-        if (*tHead == NULL){
-            printf("There are no cards to capture.\n");
-            Sleep(SLEEPL*2);
+        if (!captureCard(p1, pHead, pTail, tHead, tTail)){
             goto commandEnter;
         }
-        printf("Which card from your hand do you want to play? Type position in hand (i.e. 1, 2, 3).\n"); //put this bit in a function
-        getCommand(command);
-        cardPlace = convertToNum(command);
-        if (cardPlace <= 0  || cardPlace > (*pTail)->order){
-            printf("Please enter a valid number or card.\n");
-            Sleep(SLEEPL*2);
-            goto commandEnter;
-        }
-        c = findCardInt(pHead, pTail, cardPlace);
-        if (c.value == 0){ 
-            /*shouldn't happen*/
-            printf("There was an error.");
-            Sleep(SLEEPL*2);
-            goto commandEnter;
-        }
-
-        system("cls");
-        printf("\n---------------------------------------\n");
-        c = findCardInt(pHead, pTail, cardPlace);
-        cardToString(c, cStr);
-        printf("Your card: ");
-        printf("[");
-        printf(cStr);
-        printf("]\n\n");
-        filler = *tHead;
-        while (filler != NULL){
-            printf("-");
-            printf("%d", filler->order);
-            printf("- ");
-            cardToString(filler->data, cStr);
-            printf("[");
-            printf(cStr);
-            printf("]  \n");
-            filler = filler->next;
-        }
-        printf("\n");
-
-        printf("Which cards on the table? Type position on table separated by a space (e.g. 3 1 5).\n");
-        getCommand(command);
-        if (parseCommand(command, inputNums) && checkCards(c.value, inputNums, tHead, tTail) == 1){
-            for (i = 0; i < 10; i++){ //?
-                if(inputNums[i] == 0){
-                    break;
-                }
-                scoreCard(p1, findCardInt(tHead, tTail, inputNums[i]));
-            }
-            flagForDeletion(tHead, inputNums);
-            deleteFlags(tHead, tTail);
-            removeCardInt(pHead, pTail, cardPlace);
-
-            if ((*tHead) == NULL){
-            system("cls");
-            printf("\n\n----SCOPA!----\n");
-            p1->scopa++;
-            Sleep(SLEEPL*2);      
-        }
-
-        }else{
-            printf("Please enter a valid number or card.\n");
-            Sleep(SLEEPL*2);
-            goto commandEnter;
-        }   
-
-
     }else if ((compCom(command, "sort cards") == 0)){
         insertionSort(pHead, pTail);
         goto commandEnter;
@@ -656,6 +670,16 @@ int main(void){
     printf("\n-----------------SCOPA-----------------\n");
     printf("Welcome!\n");
     beginning:
+    // printf("Would you like to play single player or two player?\n");
+    // getCommand(command);
+    // if (compCom(command, "single") == 0 || compCom(command, "single player") == 0){
+    //     Sleep(SLEEPL); 
+    // }else if (compCom(command, "no") == 0){
+    //     helpText();
+    // }else{
+    //     printf("Please enter either yes or no. ");
+    //     goto beginning;
+    // }
     printf("Do you know how to play scopa?\n");
     getCommand(command);
     if (compCom(command, "yes") == 0){
