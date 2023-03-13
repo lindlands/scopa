@@ -30,16 +30,16 @@ int compCom(char *input, char *match){
     //toLower(match);
     len = strlen(match);
     if(strlen(input) < len){
-        return 1;
+        return 0;
     }
     result = strncmp(input,match,len);
     if(result == 0){
         if ( !result && input[len] && (input[len] != '\n' || input[len+1]) ){
-            return -1;
+            return 0;
         }
-        return result;
+        return 1;
     }
-    return -1;
+    return 0;
 }
 
 int convertToNum(char* command){

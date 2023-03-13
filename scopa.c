@@ -428,7 +428,7 @@ void helpText(){
     printf("The goal of the game is to collect cards, so by the end of the game, scoring of your cards will grant you the most points.\n\n");
     printf("[Press ENTER to proceed with GAMEPLAY rules or type \"EXIT\".]\n");
     getCommand(command);
-    if (compCom(command, "exit") == 0){
+    if (compCom(command, "exit")){
         return;
     }
     help_gameplay:
@@ -444,7 +444,7 @@ void helpText(){
     printf("If you clear the board during the round [exculding the last card played of the last round], that is called a SCOPA, which will add a point to your score.\n\n");
     printf("[Press ENTER to proceed with SCORING rules or type \"EXIT\".]\n");
     getCommand(command);
-    if (compCom(command, "exit") == 0){
+    if (compCom(command, "exit")){
         return;
     }
     help_scoring:
@@ -461,19 +461,19 @@ void helpText(){
     printf("\nKeep this in mind when capturing cards!\n");
     printf("\nWould you like to review any rules?\n");
         getCommand(command);
-        if (compCom(command, "no") == 0){
+        if (compCom(command, "no")){
             printf("Okay, we'll get right into it. Good luck! \n\n");
         }else{
             help_loop:
             printf("What would you like to review? [rules/gameplay/scoring/exit]\n");
             getCommand(command);
-            if (compCom(command, "rules") == 0){
+            if (compCom(command, "rules")){
                 goto help_rules;
-            }else if (compCom(command, "gameplay") == 0){
+            }else if (compCom(command, "gameplay")){
                 goto help_gameplay;
-            }else if (compCom(command, "scoring") == 0){
+            }else if (compCom(command, "scoring")){
                 goto help_scoring;
-            }else if (compCom(command, "exit") == 0){
+            }else if (compCom(command, "exit")){
                 return;
             }else{
                 goto help_loop;
@@ -619,22 +619,22 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
     }
     printf("What would you like to do? [ capture card | place card | sort cards | check deck | help ]\n");
     getCommand(command);
-    if(compCom(command, "place card") == 0){
+    if(compCom(command, "place card")){
         if (!placeCard(pHead, pTail, tHead, tTail)){
             goto commandEnter;
         }
-    }else if (compCom(command, "capture card") == 0){
+    }else if (compCom(command, "capture card")){
         if (!captureCard(p1, pHead, pTail, tHead, tTail)){
             goto commandEnter;
         }
-    }else if ((compCom(command, "sort cards") == 0)){
+    }else if ((compCom(command, "sort cards"))){
         insertionSort(pHead, pTail);
         goto commandEnter;
-    }else if ((compCom(command, "check deck") == 0)){
+    }else if ((compCom(command, "check deck"))){
         deckSize(place);
         Sleep(SLEEPL*2);
         goto commandEnter;
-    }else if ((compCom(command, "help") == 0)){
+    }else if ((compCom(command, "help"))){
         helpText();
         goto commandEnter;
     }else{
@@ -652,11 +652,11 @@ void printMenu(){
     printf("Welcome!\n");
     printf("What would you like to do? [ start | rules | quit ]\n");
     getCommand(command);
-    if (compCom(command, "start") == 0){
+    if (compCom(command, "start")){
         return;
-    }else if (compCom(command, "rules") == 0){
+    }else if (compCom(command, "rules")){
         helpText();
-    }else if (compCom(command, "quit") == 0){
+    }else if (compCom(command, "quit")){
         exit(0);
     }else{
         printf("Please enter a valid command.\n");
