@@ -316,8 +316,7 @@ void initializeDeck(Card* deck){
     }
     counter = 0;
     for (i = 0; i < DECKSIZE; i++){
-        //srand(time(NULL));
-        srand(4);
+        srand(time(NULL));
         while (found == 1){
             num = (rand() %(DECKSIZE));
             if (deck[num].value == 0){
@@ -484,6 +483,7 @@ void helpText(){
 }
 
 int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
+    /*player inputs card from hand and card(s) from table they want to capture*/
     char cStr[12] = {'\0'};
     int cardPlace = 0;
     Node *posHead;
@@ -565,6 +565,7 @@ int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **
 }
 
 int placeCard(Node **pHead, Node **pTail, Node **tHead, Node **tTail){
+    /*player inputs card from hand, card is added to table if no other moves*/
     int cardPlace = 0;
     Node *posHead;
     Node *posTail;
