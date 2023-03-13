@@ -564,6 +564,40 @@ int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **
 
 }
 
+int placeCard(Node **pHead, Node **pTail, Node **tHead, Node **tTail){
+    int cardPlace = 0;
+    Node *posHead;
+    Node *posTail;
+    char command[LENGTH];
+    Card c;
+    printf("Which card? Type either card or position in hand (i.e. 1, 2, 3)\n");
+    getCommand(command);
+    cardPlace = convertToNum(command);
+    if (cardPlace > 0  && cardPlace <= (*pTail)->order){
+        /*checks if card can be played*/
+        posHead = NULL;
+        posTail = NULL;
+        c = findCardInt(pHead, pTail, cardPlace);
+        checkPlayable(c.value, *tHead, *tTail, &posHead, &posTail);
+        resetFlags(tHead);
+        if (posHead != NULL){
+            printf("A card can only be placed on the table when there are no cards to capture.\n");
+            Sleep(SLEEPL*4);
+            return 0;
+
+        }else{
+            c = removeCardInt(pHead, pTail, cardPlace);
+            addCard(tHead, tTail, c);
+        }
+        return 1;
+    }else{
+        printf("Please enter a valid number or card.\n");
+        Sleep(SLEEPL*2);
+        return 0;
+        
+    }
+}
+
 void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail, int turn, int place){
     /*the player's turn: displays options and carries out specified action*/
     char cStr[12] = {'\0'};
@@ -585,32 +619,9 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
     printf("What would you like to do? [ capture card | place card | sort cards | check deck | help ]\n");
     getCommand(command);
     if(compCom(command, "place card") == 0){
-        printf("Which card? Type either card or position in hand (i.e. 1, 2, 3)\n");
-        getCommand(command);
-        cardPlace = convertToNum(command);
-        if (cardPlace > 0  && cardPlace <= (*pTail)->order){
-            /*checks if card can be played*/
-            posHead = NULL;
-            posTail = NULL;
-            c = findCardInt(pHead, pTail, cardPlace);
-            checkPlayable(c.value, *tHead, *tTail, &posHead, &posTail);
-            resetFlags(tHead);
-            if (posHead != NULL){
-                printf("A card can only be placed on the table when there are no cards to capture.\n");
-                Sleep(SLEEPL*4);
-                goto commandEnter;
-
-            }else{
-                c = removeCardInt(pHead, pTail, cardPlace);
-                addCard(tHead, tTail, c);
-            }
-        }else{
-            printf("Please enter a valid number or card.\n");
-            Sleep(SLEEPL*2);
+        if (!placeCard(pHead, pTail, tHead, tTail)){
             goto commandEnter;
-            
         }
-        
     }else if (compCom(command, "capture card") == 0){
         if (!captureCard(p1, pHead, pTail, tHead, tTail)){
             goto commandEnter;
