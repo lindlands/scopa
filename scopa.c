@@ -546,7 +546,8 @@ int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **
             }
             flagForDeletion(tHead, inputNums);
             deleteFlags(tHead, tTail);
-            removeCardInt(pHead, pTail, cardPlace);
+            c = removeCardInt(pHead, pTail, cardPlace);
+            scoreCard(pScore, c);
 
             if ((*tHead) == NULL){
             system("cls");
