@@ -426,6 +426,17 @@ void endText(){
     printf("\n---------------------------------------\n");
 }
 
+int quitText(){
+    char command[LENGTH] ={'\0'};
+    printf("Are you sure you'd like to quit?\n");
+    getCommand(command);
+    if (compCom(command, "yes") || compCom(command, "y")){
+        system("cls");
+        return 1;
+    }
+    return 0;
+}
+
 void helpText(){
     /*displays the rules*/
     help_rules:
@@ -608,8 +619,8 @@ int placeCard(Node **pHead, Node **pTail, Node **tHead, Node **tTail){
     }
 }
 
-void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail, int turn, int place){
-    /*the player's turn: displays options and carries out specified action*/
+int action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail, int turn, int place){
+    /*the player's turn: displays options and carries out specified action. Returns 1 if player quits.*/
     char cStr[12] = {'\0'};
     int cardPlace = 0;
     Node *posHead;
@@ -624,7 +635,7 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
     if (*pHead == NULL){
         printf("You have no more cards.");
         Sleep(SLEEPL*2);
-        return;
+        return 0;
     }
     printf("What would you like to do? [ capture card | place card | sort cards | check deck | help ]\n");
     getCommand(command);
@@ -636,21 +647,28 @@ void action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, N
         if (!captureCard(p1, pHead, pTail, tHead, tTail)){
             goto commandEnter;
         }
-    }else if ((compCom(command, "sort cards"))){
+    }else if (compCom(command, "sort cards")){
         insertionSort(pHead, pTail);
         goto commandEnter;
-    }else if ((compCom(command, "check deck"))){
+    }else if (compCom(command, "check deck")){
         deckSize(place);
         Sleep(SLEEPL*2);
         goto commandEnter;
-    }else if ((compCom(command, "help"))){
+    }else if (compCom(command, "help")){
         helpText();
+        goto commandEnter;
+    }else if (compCom(command, "exit") || compCom(command, "quit") || compCom(command, "q")){
+        if (quitText()){
+            return 1;
+        }
+        Sleep(SLEEPL*2);
         goto commandEnter;
     }else{
         printf("Please enter a valid command.\n");
         Sleep(SLEEPL*2);
         goto commandEnter;
     }
+    return 0;
 }
 
 void printMenu(){
@@ -666,7 +684,9 @@ void printMenu(){
     }else if (compCom(command, "rules")){
         helpText();
     }else if (compCom(command, "quit")){
-        exit(0);
+        if (quitText()){
+            exit(0);
+        }
     }else{
         printf("Please enter a valid command.\n");
     }
@@ -717,6 +737,8 @@ void displayScores(Score *p1, Score *p2){
 
 int main(void){
     /* -- LISTS -- */
+    menu: ;
+
     Node *p1Head = NULL;
     Node *p1Tail = NULL;
     Node *p2Head = NULL;
@@ -773,12 +795,16 @@ int main(void){
             if(turn == P1TURN){
                 printf("\n----PLAYER 1----\n");
                 playerBuffer();
-                action(&p1, &p1Head, &p1Tail, p2Tail, &tHead, &tTail, turn, place);
+                if (action(&p1, &p1Head, &p1Tail, p2Tail, &tHead, &tTail, turn, place)){
+                    goto menu;
+                }
                 turn = P2TURN;
             }else{
                 printf("\n----PLAYER 2----\n");
                 playerBuffer();
-                action(&p2, &p2Head, &p2Tail, p1Tail, &tHead, &tTail, turn, place);
+                if (action(&p2, &p2Head, &p2Tail, p1Tail, &tHead, &tTail, turn, place)){
+                    goto menu;
+                }
                 turn = P1TURN;
             }
         }
