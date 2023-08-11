@@ -274,6 +274,27 @@ int checkPlayable(int sum, Node* tHead, Node* tTail, Node** matchH, Node** match
     }
 }
 
+int isValidCapture(Card c,  Node **pHead, Node **pTail, Node **tHead, Node **tTail){
+    /*finds if, in potential matches, there is a card with the same value as the
+      capturing card.*/
+    Node *posHead;
+    Node *posTail;
+    Node *focus;
+    int hasSingleMatch = 0;
+    posHead = NULL;
+    posTail = NULL;
+    checkPlayable(c.value, *tHead, *tTail, &posHead, &posTail);
+    focus = posHead;
+    while (focus != NULL){
+        if (posHead->data.value == c.value){
+            hasSingleMatch = 1;
+        }
+        focus = focus->next;
+    }
+    resetFlags(tHead);
+    return hasSingleMatch;
+}
+
 
 /*-----------------Game initialization-----------------*/
 
@@ -458,6 +479,7 @@ void helpText(){
     printf("Placing a card on the table simply adds it to the rest of the cards. A card that can capture a card on the table cannot be played.\n\n");
     printf("Capturing cards involves playing a card from your hand.\n");
     printf("You can capture a card it either matching the value of the card you play, or the sum of several cards adds up to your played card.\n\n");
+    printf("However, if there is both a single matching card AND a possible combination of multiple cards, you are forced to capture only the single matching card.\n\n");
     printf("After the card is played, both your card and the captured cards will be removed.\n");
     printf("When both the player and opponent run out of cards, then three cards are dealt to each.\n\n");
     printf("If you clear the board during the round [exculding the last card played of the last round], that is called a SCOPA, which will add a point to your score.\n\n");
@@ -499,6 +521,11 @@ void helpText(){
             }
 
         }
+}
+
+void invalidCaptureText(){
+    printf("There is a matching card on the table and therfore cannot capture a combination.");
+    Sleep(SLEEPL*4);
 }
 
 int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
@@ -557,6 +584,10 @@ int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **
         printf("Which cards on the table? Type position on table separated by a space (e.g. 3 1 5).\n");
         getCommand(command);
         if (parseCommand(command, inputNums) && checkCards(c.value, inputNums, tHead, tTail) == 1){
+            if (!isValidCapture(c, pHead, pTail, tHead, tTail)){
+                invalidCaptureText();
+                return 0;
+            }
             for (i = 0; i < 10; i++){ 
                 if(inputNums[i] == 0){
                     break;
