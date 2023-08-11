@@ -416,6 +416,14 @@ void dealText(){
     Sleep(SLEEPL);
     system("cls");
     printf("\n---------------------------------------\n");
+    printf("------The cards have been dealt.------\n\n");
+}
+
+void endText(){
+    printf("------There are no more cards.------\n\n");
+    Sleep(SLEEPL*2);
+    system("cls");
+    printf("\n---------------------------------------\n");
 }
 
 void helpText(){
@@ -757,27 +765,29 @@ int main(void){
                     scoreDeck(&p1, tHead);
                 }
                 state = 1;
+            }else{
+                dealText();
             }
-            dealText();
-            printf("------The cards have been dealt.------\n\n");
         }
-
-        if(turn == P1TURN){
-            printf("\n----PLAYER 1----\n");
-            playerBuffer();
-            action(&p1, &p1Head, &p1Tail, p2Tail, &tHead, &tTail, turn, place);
-            turn = P2TURN;
-        }else{
-            printf("\n----PLAYER 2----\n");
-            playerBuffer();
-            action(&p2, &p2Head, &p2Tail, p1Tail, &tHead, &tTail, turn, place);
-            turn = P1TURN;
+        if (state == 0){
+            if(turn == P1TURN){
+                printf("\n----PLAYER 1----\n");
+                playerBuffer();
+                action(&p1, &p1Head, &p1Tail, p2Tail, &tHead, &tTail, turn, place);
+                turn = P2TURN;
+            }else{
+                printf("\n----PLAYER 2----\n");
+                playerBuffer();
+                action(&p2, &p2Head, &p2Tail, p1Tail, &tHead, &tTail, turn, place);
+                turn = P1TURN;
+            }
         }
 
         system("cls");
         printf("\n---------------------------------------\n");
     }
-
+    
+    endText();
     displayScores(&p1, &p2);
     printf("\n\n");
     buffer("Press ENTER to exit.");
