@@ -280,14 +280,14 @@ int isValidCapture(Card c,  Node **pHead, Node **pTail, Node **tHead, Node **tTa
     Node *posHead;
     Node *posTail;
     Node *focus;
-    int hasSingleMatch = 0;
+    int hasSingleMatch = 1;
     posHead = NULL;
     posTail = NULL;
     checkPlayable(c.value, *tHead, *tTail, &posHead, &posTail);
     focus = posHead;
     while (focus != NULL){
         if (posHead->data.value == c.value){
-            hasSingleMatch = 1;
+            hasSingleMatch = 0;
         }
         focus = focus->next;
     }
@@ -528,6 +528,17 @@ void invalidCaptureText(){
     Sleep(SLEEPL*4);
 }
 
+int lengthOfInput(int input[INPUTLEN]){
+    int counter = 0;
+    for (int i = 0; i < INPUTLEN; i++){
+        if (input[i] != 0) {
+            counter++;
+        }else{
+            return counter;
+        }
+    }
+}
+
 int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
     /*player inputs card from hand and card(s) from table they want to capture*/
     char cStr[12] = {'\0'};
@@ -584,7 +595,7 @@ int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **
         printf("Which cards on the table? Type position on table separated by a space (e.g. 3 1 5).\n");
         getCommand(command);
         if (parseCommand(command, inputNums) && checkCards(c.value, inputNums, tHead, tTail) == 1){
-            if (!isValidCapture(c, pHead, pTail, tHead, tTail)){
+            if (lengthOfInput(inputNums) > 1 && !isValidCapture(c, pHead, pTail, tHead, tTail)){
                 invalidCaptureText();
                 return 0;
             }
