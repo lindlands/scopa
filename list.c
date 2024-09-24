@@ -4,11 +4,16 @@
 #include "list.h"
 #include "macros.h"
 
-
-void addCard(Node **head, Node **tail, Card c){
-    /* ∆ Adds specified card to the end of llist. ∆ */
+/**
+ * @brief Adds card to the end of linked list
+ * 
+ * @param head head of linked list
+ * @param tail tail of linked list
+ * @param card card to be added 
+ */
+void addCard(Node **head, Node **tail, Card card){
     Node* temp = (Node*)malloc(sizeof(Node));
-    temp->data = c;
+    temp->data = card;
     temp->next = 0;
     temp->flag = FLAG_NONE;
     if ((*head) == NULL){
@@ -23,8 +28,12 @@ void addCard(Node **head, Node **tail, Card c){
     }
 }
 
+/**
+ * @brief Resets order value of nodes. Starts from 1.
+ * 
+ * @param head head of linked list
+ */
 void resetNums(Node **head){
-    /*Resets order value of nodes. Starts from 1*/
     int counter = 1;
     Node*temp = *head;
     while (temp != NULL){
@@ -34,8 +43,12 @@ void resetNums(Node **head){
     }
 }
 
+/**
+ * @brief Resets the flag value of nodes to FLAG_NONE
+ * 
+ * @param head head of linked list
+ */
 void resetFlags(Node **head){
-    /*Resets the flag value of nodes to FLAG_NONE*/
     Node *temp = *head;
     while (temp != NULL){
         temp->flag = FLAG_NONE;
@@ -43,8 +56,15 @@ void resetFlags(Node **head){
     }
 }
 
+/**
+ * @brief Find card in list by integer
+ * 
+ * @param head head of linked list
+ * @param tail tail of linked list
+ * @param n integer value of card to find
+ * @return Card that matches the n integer value
+ */
 Card findCardInt(Node **head, Node **tail, int n){
-    /* ∆ find any specified card ∆ */
     Node *temp;
     Card c;
     c.value = 0;
@@ -59,14 +79,20 @@ Card findCardInt(Node **head, Node **tail, int n){
     return c;
 }
 
-int removeCard(Node **head, Node **tail, Card c){
-    /* ∆ Removes any specified card ∆ */
-    /* ◎ EDGECASES: end of list removed, any in middle, first removed */
+/**
+ * @brief Removes given card from the linked list
+ * 
+ * @param head head of linked list
+ * @param tail tail of linked list
+ * @param card card to be removed
+ * @return int: 0 if successful
+ */
+int removeCard(Node **head, Node **tail, Card card){
     Node *temp, *previous;
     temp = *head;
     previous = *head;
     /*first node*/
-    if (temp->data.suit == c.suit && temp->data.value == c.value){
+    if (temp->data.suit == card.suit && temp->data.value == card.value){
         *head = (*head)->next;
         free(temp);
         resetNums(head);
@@ -75,7 +101,7 @@ int removeCard(Node **head, Node **tail, Card c){
     /*not first node, loop through*/
     temp = temp->next;
     while (temp != NULL){
-        if (temp->data.suit == c.suit && temp->data.value == c.value){
+        if (temp->data.suit == card.suit && temp->data.value == card.value){
             if (temp->next == NULL){
                 *tail = previous;
             }
@@ -90,9 +116,16 @@ int removeCard(Node **head, Node **tail, Card c){
     return 1;
 }
 
+/**
+ * @brief Removes and returns card from linked list that matches
+ * the given place in the list
+ * 
+ * @param head head of linked list 
+ * @param tail tail of linked list
+ * @param n place in the list 
+ * @return Card that matches the given numbers
+ */
 Card removeCardInt(Node **head, Node **tail, int n){
-    /* ∆ Removes any specified card ∆ */
-    /* ◎ EDGECASES: end of list removed, any in middle, first removed */
     Node *temp, *previous;
     Card c;
     temp = *head;
