@@ -16,3 +16,4 @@ int findPrime(Score s);
 void scoreCard(Score *score, Card c);
 void scoreDeck(Score *s, Node *head);
 void addScore(int p1Field, int p2Field, int *p1, int *p2);
+void displayScores(Score *p1, Score *p2);
