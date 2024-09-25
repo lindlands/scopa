@@ -165,14 +165,26 @@ Card removeCardInt(Node **head, Node **tail, int n){
     return c;
 }
 
+/**
+ * @brief Removes all cards from the linked list
+ * 
+ * @param head head of linked list
+ * @param tail tail of linked list
+ */
 void removeList(Node **head, Node **tail){
     while ((*head) != NULL){
         removeCardInt(head, tail, 1);
     }
 }
 
-int compareCard(Card c1, Card c2){
-    /*returns 1 if first card is greater, 0 if second*/
+/**
+ * @brief Compares the numeric values of two cards
+ * 
+ * @param c1 card
+ * @param c2 card
+ * @return int: returns 1 if first card is greater
+ */
+int compareCards(Card c1, Card c2){
     if (c1.value > c2.value){
         return 1;
     }else{
@@ -181,6 +193,12 @@ int compareCard(Card c1, Card c2){
 	}
 }
 
+/**
+ * @brief Sorts linked list by card value
+ * 
+ * @param head head of linked list
+ * @param tail tail of linked list
+ */
 void insertionSort(Node **head, Node **tail){
     Node *filler = *head;
 	Node *prev = *head;
@@ -188,7 +206,7 @@ void insertionSort(Node **head, Node **tail){
         Node *start = *head;
 		Node *sprev = NULL;
         while (start != filler){
-            if (compareCard(filler->data, start->data)){
+            if (compareCards(filler->data, start->data)){
 				/*card goes here*/
 				prev->next = filler->next;
 				if (filler->next == NULL){
@@ -212,9 +230,14 @@ void insertionSort(Node **head, Node **tail){
 	resetNums(head);
 }
 
-
+/**
+ * @brief changes all nodes' flag values to FLAG_DELETE if
+ * their order values are in nums[]
+ * 
+ * @param head head of linked list
+ * @param nums array containing order values of cards to remove
+ */
 void flagForDeletion(Node **head, int nums[INPUTLEN]){
-    /*changes all nodes' flag values to FLAG_DELETE if their order values are in nums[]*/
     Node *filler = *head;
     int i = 0;
     while(filler != NULL){
@@ -230,8 +253,14 @@ void flagForDeletion(Node **head, int nums[INPUTLEN]){
     }
 }
 
+/**
+ * @brief Removes all nodes in linked list that have a flag
+ * value of FLAG_DELETE
+ * 
+ * @param head head of linked list
+ * @param tail tail of linked list
+ */
 void deleteFlags(Node **head, Node **tail){
-    /*removes all nodes in linked list that have a flag value of -1*/
     Node *filler = (*head);
     Card c;
     while (filler != NULL){
