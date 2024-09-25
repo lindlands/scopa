@@ -2,8 +2,11 @@ CFLAGS =
 
 all: scopa clean
 
-scopa: scopa.c list.o command.o macros.h
-	gcc scopa.c list.o command.o -o scopa $(CFLAGS)
+scopa: scopa.c score.o list.o command.o macros.h
+	gcc scopa.c score.o list.o command.o -o scopa $(CFLAGS)
+
+score.o: score.c score.h list.c list.h macros.h
+	gcc -c score.c -o score.o $(CFLAGS)
 
 list.o: list.c list.h macros.h
 	gcc -c list.c -o list.o $(CFLAGS)
