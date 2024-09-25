@@ -17,9 +17,14 @@
 #define P2TURN 1
 #define DECKSIZE 40
 #define HANDSIZE 3
+#define CARD_STR_LEN 12
 
+/**
+ * @brief Prints all cards in given linked list
+ * 
+ * @param head head of linked list
+ */
 void printCards(Node *head){
-    /*Prints all cards in given linked list*/
     Node* temp = head;
     int place = 0;
     if (head == NULL){
@@ -47,8 +52,13 @@ void printCards(Node *head){
     }
 }
 
-void cardToString(Card c, char str[12]){
-    /*card formatted to [value of suit] and put in str[]*/
+/**
+ * @brief Converts card to a string in format of "[value] of [suit]"
+ * 
+ * @param c Card
+ * @param str converted string
+ */
+void cardToString(Card c, char str[CARD_STR_LEN]){
     int i;
     int place = 0;
     memset(str,0,strlen(str));
@@ -57,10 +67,10 @@ void cardToString(Card c, char str[12]){
         str[place + 1] = '0';
         place++;
     }else{
-        str[place] = c.value + 48;
+        str[place] = c.value + CHAR_TO_NUM;
     }
     place++;
-    for (i = 0; i < 12; i++){
+    for (i = 0; i < CARD_STR_LEN; i++){
         if (c.suit[i] == '\000'){
             break;
         }
@@ -69,8 +79,16 @@ void cardToString(Card c, char str[12]){
     }
 }
 
-int checkCards(int val, int nums[INPUTLEN], Node **head, Node **tail){
-    /*verifies that list adds up to chosen value*/
+/**
+ * @brief Verifies that values of cards in linked list add to given sum
+ * 
+ * @param expectedSum int
+ * @param nums int array of order values of cards
+ * @param head head of linked list
+ * @param tail tail of linked list
+ * @return int: 1 if sum is correct
+ */
+int verifySumOfCards(int expectedSum, int nums[INPUTLEN], Node **head, Node **tail){
     int i;
     Card c;
     int counter = 0;
@@ -79,14 +97,23 @@ int checkCards(int val, int nums[INPUTLEN], Node **head, Node **tail){
         counter += c.value;
         i++;
     }
-    if (counter == val){
+    if (counter == expectedSum){
         return 1;
     }
     return 0;
 }
 
-int checkPlayable(int sum, Node* tHead, Node* tTail, Node** matchH, Node** matchT){
-    /*appends combinations that add up to sum to matchH/T*/
+/**
+ * @brief Appends all possible card combinations that add up
+ * to the given sum to linked list
+ * 
+ * @param sum int
+ * @param tHead head of linked list of all cards
+ * @param tTail tail of linked list of all cards
+ * @param matchH head of linked list with possible card combinations
+ * @param matchT tail of linked list with possible card combinations
+ */
+void checkPlayable(int sum, Node* tHead, Node* tTail, Node** matchH, Node** matchT){
     Node* focus;
     Node *oldMatchT;
     int i;
@@ -113,9 +140,16 @@ int checkPlayable(int sum, Node* tHead, Node* tTail, Node** matchH, Node** match
     }
 }
 
-int isValidCapture(Card c,  Node **pHead, Node **pTail, Node **tHead, Node **tTail){
-    /*finds if, in potential matches, there is a card with the same value as the
-      capturing card.*/
+/**
+ * @brief Finds if there is a single card in the linked list with
+ * the same value as the given card.
+ * 
+ * @param c Card
+ * @param tHead head of linked list
+ * @param tTail tail of linked list
+ * @return int: 0 if true
+ */
+int isValidCapture(Card c, Node **tHead, Node **tTail){
     Node *posHead;
     Node *posTail;
     Node *focus;
@@ -380,7 +414,7 @@ int lengthOfInput(int input[INPUTLEN]){
 
 int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
     /*player inputs card from hand and card(s) from table they want to capture*/
-    char cStr[12] = {'\0'};
+    char cStr[CARD_STR_LEN] = {'\0'};
     int cardPlace = 0;
     Node *posHead;
     Node *posTail;
@@ -433,8 +467,8 @@ int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **
 
         printf("Which cards on the table? Type position on table separated by a space (e.g. 3 1 5).\n");
         getCommand(command);
-        if (parseCommand(command, inputNums) && checkCards(c.value, inputNums, tHead, tTail) == 1){
-            if (lengthOfInput(inputNums) > 1 && !isValidCapture(c, pHead, pTail, tHead, tTail)){
+        if (parseCommand(command, inputNums) && verifySumOfCards(c.value, inputNums, tHead, tTail)){
+            if (lengthOfInput(inputNums) > 1 && !isValidCapture(c, tHead, tTail)){
                 invalidCaptureText();
                 return 0;
             }
@@ -450,13 +484,12 @@ int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **
             scoreCard(pScore, c);
 
             if ((*tHead) == NULL){
-            system("cls");
-            printf("\n\n----SCOPA!----\n");
-            pScore->scopa++;
-            Sleep(SLEEPL*2);     
-            return 1; 
-        }
-
+                system("cls");
+                printf("\n\n----SCOPA!----\n");
+                pScore->scopa++;
+                Sleep(SLEEPL*2);
+                return 1; 
+            }
         }else{
             printf("Please enter a valid number or card.\n");
             Sleep(SLEEPL*2);
@@ -502,7 +535,7 @@ int placeCard(Node **pHead, Node **pTail, Node **tHead, Node **tTail){
 
 int action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail, int turn, int place){
     /*the player's turn: displays options and carries out specified action. Returns 1 if player quits.*/
-    char cStr[12] = {'\0'};
+    char cStr[CARD_STR_LEN] = {'\0'};
     int cardPlace = 0;
     Node *posHead;
     Node *posTail;

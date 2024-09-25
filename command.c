@@ -5,8 +5,6 @@
 
 #include "macros.h"
 
-#define CHAR_TO_NUM 48
-
 /**
  * Converts string to lowercase
  * 
@@ -23,6 +21,11 @@ void toLower(char* str){
     }
 }
 
+/**
+ * @brief Get user input and convert to lowercase
+ * 
+ * @param arr: array to store input 
+ */
 void getCommand(char *arr){
     fgets(arr, LENGTH, stdin);
     toLower(arr);

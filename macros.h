@@ -5,6 +5,8 @@
 #define FLAG_HIDE 1
 #define SLEEPL 350
 
+#define CHAR_TO_NUM 48
+
 #define NUMSUITS 4
 #define COINS 0
 #define CUPS 1
