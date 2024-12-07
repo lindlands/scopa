@@ -12,3 +12,5 @@
 #define CUPS 1
 #define SWORDS 2
 #define CLUBS 3
+
+#define P1TURN -1
