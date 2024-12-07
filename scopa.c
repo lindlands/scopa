@@ -171,8 +171,12 @@ int isValidCapture(Card c, Node **tHead, Node **tTail){
 
 /*-----------------Game initialization-----------------*/
 
+/**
+ * @brief takes in .txt file and prints it
+ * 
+ * @param str file name
+ */
 void printPicture(char str[]){
-    /*takes in .txt file (extension included in str) and prints it*/
     FILE *txtfile;
     char c;
     txtfile = fopen(str, "r");
@@ -187,8 +191,12 @@ void printPicture(char str[]){
     fclose(txtfile);
 }
 
+/**
+ * @brief adds randomized cards to deck only if deck is fully initialized
+ * 
+ * @param deck deck to be added to
+ */
 void initializeDeck(Card* deck){
-    /*adds randomized cards to deck only if deck is fully initialized*/
     int i;
     int counter = 0;
     int num;
@@ -224,8 +232,12 @@ void initializeDeck(Card* deck){
     }
 }
 
+/**
+ * @brief Prints "visual" estimation of deck size
+ * 
+ * @param place location in deck
+ */
 void deckSize(int place){
-    /*takes in location int deck (int) and prints "visual" estimation of deck size*/
     if (place >= 30){
         printf("The deck has a few cards left.");
     }else if (place >= 15){
@@ -237,8 +249,17 @@ void deckSize(int place){
     printf("\n\n");
 }
 
-void dealCards(Card* deck, Node**head1, Node**Tail1, Node**head2, Node**Tail2, int* place){
-    /*adds three cards to both players' hands*/
+/**
+ * @brief adds default number of cards to both players' hands
+ * 
+ * @param deck deck of cards in play
+ * @param p1Head head of player one's hand
+ * @param p1Tail tail of player one's hand
+ * @param p2Head head of player two's hand
+ * @param p2Tail tail of player two's hand
+ * @param place location in deck
+ */
+void dealCards(Card* deck, Node**p1Head, Node**p1Tail, Node**p2Head, Node**p2Tail, int* place){
     int i;
     Card c;
     for (i = 0; i < HANDSIZE; i++){
@@ -246,16 +267,23 @@ void dealCards(Card* deck, Node**head1, Node**Tail1, Node**head2, Node**Tail2, i
             break;
         }
         c = deck[*place];
-        addCard(head1, Tail1, c);
+        addCard(p1Head, p1Tail, c);
         *place = (*place)+1;
         c = deck[*place];
-        addCard(head2, Tail2, c);
+        addCard(p2Head, p2Tail, c);
         *place = (*place)+1;
     }
 }
 
+/**
+ * @brief prints cards of player and table, and the number of cards of the opponent.
+ * 
+ * @param playerHead head of player's hand
+ * @param opTail tail of opponent's hand
+ * @param tableHead head of cards on the table
+ * @param turn marks player 1 or player 2's turn
+ */
 void displayCards(Node*playerHead, Node*opTail, Node*tableHead, int turn){
-    /*prints cards of player and table, and the number of cards of the opponent.*/
     system("cls");
     printf("\n---------------------------------------\n");
     if (turn == P1TURN){
@@ -280,23 +308,33 @@ void displayCards(Node*playerHead, Node*opTail, Node*tableHead, int turn){
     }
 }
 
-void buffer(char *c){
-    /*displays 'screen' that waits for \n to continue*/
+/**
+ * @brief displays 'screen' that waits for enter to continue
+ * 
+ * @param text text to display
+ */
+void buffer(char *text){
     char enterCheck = 'a';
-    printf(c);
+    printf(text);
     while (enterCheck != '\n'){enterCheck = getchar();}
     system("cls");
     printf("\n---------------------------------------\n");
 }
 
+/**
+ * @brief displays 'screen' on player turn that waits for enter
+ * 
+ */
 void playerBuffer(){
-    /*displays 'screen' that waits for \n to continue*/
     char * str = "Press ENTER to start turn.\n";
     buffer(str);
 }
 
+/**
+ * @brief animation' for dealing cards
+ * 
+ */
 void dealText(){
-    /*'animation' for dealing cards*/
     int i;
     for (i = 0; i < 3; i++){
         printf("/ ");
@@ -313,6 +351,10 @@ void dealText(){
     printf("------The cards have been dealt.------\n\n");
 }
 
+/**
+ * @brief prints text signifying end of game
+ * 
+ */
 void endText(){
     printf("------There are no more cards.------\n\n");
     Sleep(SLEEPL*2);
@@ -320,6 +362,11 @@ void endText(){
     printf("\n---------------------------------------\n");
 }
 
+/**
+ * @brief asks if the player would like to quit
+ * 
+ * @return 1 if true, else 0
+ */
 int quitText(){
     char command[LENGTH] ={'\0'};
     printf("Are you sure you'd like to quit?\n");
@@ -331,8 +378,11 @@ int quitText(){
     return 0;
 }
 
+/**
+ * @brief displays the rules
+ * 
+ */
 void helpText(){
-    /*displays the rules*/
     help_rules:
     system("cls");
     char command[LENGTH] ={'\0'};
@@ -396,6 +446,10 @@ void helpText(){
         }
 }
 
+/**
+ * @brief displays text when capture isn't valid
+ * 
+ */
 void invalidCaptureText(){
     printf("There is a matching card on the table and therfore cannot capture a combination.");
     Sleep(SLEEPL*4);
@@ -412,8 +466,17 @@ int lengthOfInput(int input[INPUTLEN]){
     }
 }
 
+/**
+ * @brief player inputs card from hand and card(s) from table they want to capture
+ * 
+ * @param pScore player's score
+ * @param pHead head of player's hand
+ * @param pTail tail of player's hand
+ * @param tHead head of cards on table
+ * @param tTail tail of cards on table
+ * @return 1 if successful, 0 if cannot capture 
+ */
 int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **tTail){
-    /*player inputs card from hand and card(s) from table they want to capture*/
     char cStr[CARD_STR_LEN] = {'\0'};
     int cardPlace = 0;
     Node *posHead;
@@ -498,8 +561,16 @@ int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **
 
 }
 
+/**
+ * @brief player inputs card from hand, card is added to table if no other moves
+ * 
+ * @param pHead head of player's hand
+ * @param pTail tail of player's hand
+ * @param tHead head of cards on table
+ * @param tTail tail of cards on table
+ * @return 1 if successful, 0 if cannot place 
+ */
 int placeCard(Node **pHead, Node **pTail, Node **tHead, Node **tTail){
-    /*player inputs card from hand, card is added to table if no other moves*/
     int cardPlace = 0;
     Node *posHead;
     Node *posTail;
@@ -533,8 +604,20 @@ int placeCard(Node **pHead, Node **pTail, Node **tHead, Node **tTail){
     }
 }
 
-int action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail, int turn, int place){
-    /*the player's turn: displays options and carries out specified action. Returns 1 if player quits.*/
+/**
+ * @brief the player's turn: displays options and carries out specified action. 
+ * 
+ * @param pScore player's score
+ * @param pHead head of player's hand
+ * @param pTail tail of player's hand
+ * @param opTail tail of opponent's hand
+ * @param tHead head of cards on table
+ * @param tTail tail of cards on table
+ * @param turn marks player 1 or player 2's turn
+ * @param place location in deck
+ * @return Returns 1 if player quits 
+ */
+int action(Score *pScore, Node **pHead, Node **pTail, Node *opTail, Node **tHead, Node **tTail, int turn, int place){
     char cStr[CARD_STR_LEN] = {'\0'};
     int cardPlace = 0;
     Node *posHead;
@@ -558,7 +641,7 @@ int action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, No
             goto commandEnter;
         }
     }else if (compCom(command, "capture card")){
-        if (!captureCard(p1, pHead, pTail, tHead, tTail)){
+        if (!captureCard(pScore, pHead, pTail, tHead, tTail)){
             goto commandEnter;
         }
     }else if (compCom(command, "sort cards")){
@@ -585,8 +668,11 @@ int action(Score *p1, Node **pHead, Node **pTail, Node *opTail, Node **tHead, No
     return 0;
 }
 
+/**
+ * @brief prints starting menu sequence
+ * 
+ */
 void printMenu(){
-    /*prints starting menu sequence*/
     char command[LENGTH] = {'\0'};
     while(1){
     printf("\n-----------------SCOPA-----------------\n");
