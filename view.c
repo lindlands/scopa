@@ -8,6 +8,15 @@
 #include "score.h"
 
 /**
+ * @brief Clears terminal and prints line
+ * 
+ */
+void clearAndPrintLine() {
+    system("cls");
+    printf("\n---------------------------------------\n");
+}
+
+/**
  * @brief Prints all cards in given linked list
  * 
  * @param head head of linked list
@@ -86,8 +95,7 @@ void deckSize(int place){
  * @param turn marks player 1 or player 2's turn
  */
 void displayCards(Node*playerHead, Node*opTail, Node*tableHead, int turn){
-    system("cls");
-    printf("\n---------------------------------------\n");
+    clearAndPrintLine();
     if (turn == P1TURN){
         printf("----PLAYER 1----\n");
     }else{
@@ -119,8 +127,7 @@ void buffer(char *text){
     char enterCheck = 'a';
     printf(text);
     while (enterCheck != '\n'){enterCheck = getchar();}
-    system("cls");
-    printf("\n---------------------------------------\n");
+    clearAndPrintLine();
 }
 
 /**
@@ -148,8 +155,7 @@ void dealText(){
         Sleep(SLEEPL/2);
     }
     Sleep(SLEEPL);
-    system("cls");
-    printf("\n---------------------------------------\n");
+    clearAndPrintLine();
     printf("------The cards have been dealt.------\n\n");
 }
 
@@ -160,8 +166,7 @@ void dealText(){
 void endText(){
     printf("------There are no more cards.------\n\n");
     Sleep(SLEEPL*2);
-    system("cls");
-    printf("\n---------------------------------------\n");
+    clearAndPrintLine();
 }
 
 /**
@@ -282,4 +287,3 @@ void printMenu(){
     system("cls");
     }
 }
-

@@ -1,3 +1,4 @@
+void clearAndPrintLine();
 void printCards(Node *head);
 void printPicture(char str[]);
 void deckSize(int place);

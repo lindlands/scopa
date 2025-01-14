@@ -453,8 +453,7 @@ int main(void){
 
     /*printPicture(".txt");*/ /*optional/unused to print header text from file*/
     printMenu();
-    system("cls");
-    printf("\n---------------------------------------\n");
+    clearAndPrintLine();
 
     initializeDeck(deck);    
     for (i = 0; i <= HANDSIZE; i++){
