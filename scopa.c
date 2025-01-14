@@ -257,8 +257,7 @@ int captureCard(Score *pScore, Node **pHead, Node **pTail, Node **tHead, Node **
             return 0;
         }
 
-        system("cls");
-        printf("\n---------------------------------------\n");
+        clearAndPrintLine();
         c = findCardInt(pHead, pTail, cardPlace);
         cardToString(c, cStr);
         printf("Your card: ");
@@ -495,8 +494,7 @@ int main(void){
             }
         }
 
-        system("cls");
-        printf("\n---------------------------------------\n");
+        clearAndPrintLine();
     }
     
     endText();
